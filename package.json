@@ -1,0 +1,25 @@
+{
+  "name": "lms-adm-node",
+  "version": "1.0.0",
+  "description": "Administrator microservice of Node.js version of Library Management System project for Java training at Smoothstack",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/justin-obrien-smoothstack/lms-adm-node.git"
+  },
+  "author": "Justin O'Brien, Sean Darsie, Trevor Huis in 't Veld",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/justin-obrien-smoothstack/lms-adm-node/issues"
+  },
+  "homepage": "https://github.com/justin-obrien-smoothstack/lms-adm-node#readme",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
+}
