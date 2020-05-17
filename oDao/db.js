@@ -2,7 +2,7 @@
 
 import { createConnection } from 'mysql';
 
-export let connection = createConnection({
+export default createConnection({
     host: 'localhost',
     user: 'root',
     password: 'texas',
