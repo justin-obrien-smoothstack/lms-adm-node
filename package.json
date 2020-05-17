@@ -18,5 +18,8 @@
   "bugs": {
     "url": "https://github.com/justin-obrien-smoothstack/lms-adm-node/issues"
   },
-  "homepage": "https://github.com/justin-obrien-smoothstack/lms-adm-node#readme"
+  "homepage": "https://github.com/justin-obrien-smoothstack/lms-adm-node#readme",
+  "dependencies": {
+    "mysql": "^2.18.1"
+  }
 }
