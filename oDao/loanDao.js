@@ -17,3 +17,11 @@ const write = (query, parameters) => {
         })
     })
 }
+
+exports.update = loan => {
+    const query = 'UPDATE tbl_loan SET dueDate = ?, dateIn = ? ' +
+        'WHERE bookId = ? AND cardNo = ? AND branchId = ? AND dateOut = ?',
+        parameters = [loan.dueDate, loan.dateIn, loan.bookId, loan.cardNo,
+        loan.branchId, loan.dateOut];
+    write(query, parameters);
+}
