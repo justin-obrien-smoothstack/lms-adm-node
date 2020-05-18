@@ -4,7 +4,5 @@
 
 const dateOut = '2020-05-14 09:43:26';
 
-console.log(dateOut);
-
 (async () =>
     console.log(await require('../../../../oDao/loanDao.js').read(10, 3, 25, dateOut)))();
