@@ -23,5 +23,5 @@ exports.update = loan => {
         'WHERE bookId = ? AND cardNo = ? AND branchId = ? AND dateOut = ?',
         parameters = [loan.dueDate, loan.dateIn, loan.bookId, loan.cardNo,
         loan.branchId, loan.dateOut];
-    write(query, parameters);
+    return write(query, parameters);
 }
