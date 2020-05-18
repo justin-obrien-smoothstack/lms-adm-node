@@ -20,6 +20,7 @@
   },
   "homepage": "https://github.com/justin-obrien-smoothstack/lms-adm-node#readme",
   "dependencies": {
+    "moment": "^2.25.3",
     "mysql": "^2.18.1"
   }
 }
