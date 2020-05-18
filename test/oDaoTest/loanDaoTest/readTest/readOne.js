@@ -1,6 +1,10 @@
+// passed 05/18 12:23
+
 'use strict';
 
-const dateOut = new Date(2020, 4, 14, 9, 43, 26);
+const dateOut = '2020-05-14 09:43:26';
+
+console.log(dateOut);
 
 (async () =>
-    console.log(await require('../../../../oDao/loanDao.js').read(10, 25, 3, dateOut)))();
+    console.log(await require('../../../../oDao/loanDao.js').read(10, 3, 25, dateOut)))();
