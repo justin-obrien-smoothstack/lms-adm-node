@@ -1,3 +1,5 @@
+// passed 05/18 15:54
+
 'use strict';
 
 const loan = {
