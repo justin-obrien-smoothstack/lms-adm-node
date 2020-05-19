@@ -9,8 +9,7 @@ exports.override = async (loanId) => {
             'read the loan from the database.'
     };
     let loan;
-    if (loanId.dateOut)
-        loanId.dateOut = loanId.dateOut.replace('T', ' ').replace('_', ':');
+    loanId.dateOut = loanId.dateOut.replace('T', ' ').replace('_', ':');
     try {
         loan = (await dao.read(loanId.bookId,
             loanId.cardNo, loanId.branchId, loanId.dateOut))[0];
