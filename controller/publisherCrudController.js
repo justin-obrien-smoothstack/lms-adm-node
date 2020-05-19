@@ -12,7 +12,7 @@ router.get('', () => {
 });
 
 router.get('/lms/admin/publishers', (request, response) => {
-    responseAttributes = service.readAll();
+    const responseAttributes = service.readAll();
     response.status(responseAttributes.status);
     response.send(responseAttributes.message);
 });
