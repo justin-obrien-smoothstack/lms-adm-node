@@ -10,8 +10,8 @@ exports.override = async (loanId) => {
     };
     let loan;
     try {
-        loan = await dao.read(loanId.bookId,
-            loanId.cardNo, loanId.branchId, loanId.dateOut)[0];
+        loan = (await dao.read(loanId.bookId,
+            loanId.cardNo, loanId.branchId, loanId.dateOut))[0];
     } catch (e) {
         return result;
     }
