@@ -4,7 +4,7 @@ const service = require('../../../service/overrideService.js');
 
 const loanId = {
     bookId: 9,
-    cardNo: 3,
+    cardNo: 1,
     branchId: 25,
     dateOut: '2020-05-10 17:48:00'
 };
