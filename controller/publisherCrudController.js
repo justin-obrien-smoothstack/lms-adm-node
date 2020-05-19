@@ -12,7 +12,7 @@ router.get('', () => {
 });
 
 router.get('/lms/admin/publishers/:publisherId', (request, response) => {
-    service.readAll(publisherId).then(result => {
+    service.readOne(request.params.publisherId).then(result => {
         response.status(result.status);
         response.send(result.message);
     }).catch(error => {
