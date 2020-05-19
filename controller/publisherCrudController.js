@@ -3,7 +3,7 @@
 const router = require('express').Router(),
     service = require('../service/publisherCrudService');
 
-router.post('lms/admin/publishers', (request, response) => {
+router.post('lms/admin/publisher', (request, response) => {
     const publisher = request.body;
     service.create(publisher).then(result => {
         response.status(result.status);
