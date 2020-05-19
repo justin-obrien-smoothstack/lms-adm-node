@@ -11,8 +11,10 @@ router.get('', () => {
 
 });
 
-router.get('', () => {
-
+router.get('/lms/admin/publishers', (request, response) => {
+    responseAttributes = service.readAll();
+    response.status(responseAttributes.status);
+    response.send(responseAttributes.message);
 });
 
 router.put('', () => {
