@@ -15,3 +15,5 @@ router.put('/lms/admin/loan/book/:bookId/borrower/:cardNo/branch/:branchId' +
         response.send(result.message);
     }
 )
+
+module.exports = router;
