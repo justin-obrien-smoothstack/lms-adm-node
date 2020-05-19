@@ -35,11 +35,12 @@ exports.update = (publisher) => {
                 `length is ${maxLength} characters.`;
             resolve(responseAttributes);
         }
-        dao.read(publisherId).then(result => {
+        dao.read(publisher.publisherId).then(result => {
             if (result.length === 0) {
                 responseAttributes.status = 404;
                 responseAttributes.message =
-                    `There exists no publisher with ID ${publisherId}.`;
+                    `There exists no publisher with ` +
+                    `ID ${publisher.publisherId}.`;
                 resolve(responseAttributes);
             } else {
                 dao.update(publisher).then(result => {
@@ -50,7 +51,7 @@ exports.update = (publisher) => {
                 }).catch(error => {
                     responseAttributes.status = 500;
                     responseAttributes.message = 'There was an error while ' +
-                    'trying to update that publisher in the database.';
+                        'trying to update that publisher in the database.';
                     resolve(responseAttributes);
                 })
             }
