@@ -3,10 +3,17 @@
 const dao = require('../oDao/loanDao.js');
 
 exports.override = async (loanId) => {
-    const result = {},
+    const loan, result = {
+        status: 500,
+        message: 'There was an error while trying to ' +
+            'read the loan from the database.'
+    };
+    try {
         loan = await dao.read(loanId.bookId,
             loanId.cardNo, loanId.branchId, loanId.dateOut)[0];
-    let newDueDate;
+    } catch (e) {
+        return result;
+    }
     if (loan === undefined) {
         result.status = 404;
         result.message = 'That loan was not found.';
@@ -21,11 +28,16 @@ exports.override = async (loanId) => {
         result.message = 'That loan was returned on time.';
     }
     else {
-        newDueDate loan.dueDate.getFullYear() + '-' + loan.dueDate.getMonth + '-' + loan.
-        loan.dueDate.setDate(loan.dueDate.getDate() + 7);
-        await dao.update(loan);
-        result.status = 200;
-        result.message = toString(loan);
+        try {
+            loan.dueDate.setDate(loan.dueDate.getDate() + 7);
+            loan.dueDate = moment(loan.dueDate).format('YYYY-MM-DD hh:mm:ss');
+            await dao.update(loan);
+            result.status = 200;
+            result.message = 'New due date: ' + loan.dueDate;
+        } catch (e) {
+            result.message = 'There was an error while trying to ' +
+                'update the loan in the database.';
+        }
     }
     return result;
 }
