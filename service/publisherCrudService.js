@@ -2,6 +2,8 @@
 
 const dao = require('../oDao/publisherDao.js');
 
+const maxLength = 45;
+
 exports.create = () => {
 
 };
