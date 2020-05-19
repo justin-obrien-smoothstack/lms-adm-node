@@ -16,7 +16,7 @@ router.get('', () => {
 });
 
 router.put('/lms/admin/publisher', (request, response) => {
-    service.delete(request.params.publisherId).then(result => {
+    service.update(request.params.publisherId).then(result => {
         response.status(result.status);
         response.send(result.message);
     }).catch(error => {
