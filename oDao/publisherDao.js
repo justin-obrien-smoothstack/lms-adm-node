@@ -21,7 +21,7 @@ const write = (query, parameters) => {
 exports.create = (publisher) => {
     const query = 'INSERT INTO tbl_publisher ' +
         '(publisherName, publisherAddress, publisherPhone) VALUES (?, ?, ?);',
-        parameters = [publisher.publisherName, publisher.publisheAddress,
+        parameters = [publisher.publisherName, publisher.publisherAddress,
         publisher.publisherPhone]
     return write(query, parameters);
 };
