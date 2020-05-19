@@ -19,7 +19,8 @@ exports.readAll = () => {
 exports.update = (publisher) => {
     const responseAttributes = {};
     return new Promise((resolve, reject) => {
-        if (!(publisher.publisherName && publisher.publisherId)) {
+        if (!(publisher.publisherName &&
+            (publisher.publisherId === 0 || publisher.publisherId))) {
             responseAttributes.status = 400;
             responseAttributes.message = 'Error: The fields "publisherId" ' +
                 'and "publisherName" are required.';
