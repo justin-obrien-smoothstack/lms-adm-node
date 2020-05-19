@@ -19,10 +19,10 @@ router.put('/lms/admin/publisher', (request, response) => {
     service.update(request.body).then(result => {
         response.status(result.status);
         response.send(result.message);
-    })/*.catch(error => {
+    }).catch(error => {
         response.status(500);
         response.send('An unknown error occurred.');
-    })*/
+    })
 });
 
 router.delete('', () => {
