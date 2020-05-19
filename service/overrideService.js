@@ -3,11 +3,12 @@
 const dao = require('../oDao/loanDao.js');
 
 exports.override = async (loanId) => {
-    const loan, result = {
+    const result = {
         status: 500,
         message: 'There was an error while trying to ' +
             'read the loan from the database.'
     };
+    let loan;
     try {
         loan = await dao.read(loanId.bookId,
             loanId.cardNo, loanId.branchId, loanId.dateOut)[0];
