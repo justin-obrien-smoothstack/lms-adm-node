@@ -6,10 +6,10 @@ const router = require('express').Router(),
 router.put('/lms/admin/loan/book/:bookId/borrower/:cardNo/branch/:branchId' +
     '/dateout/:dateOut', async (request, response) => {
         const loanId = {
-            bookId: req.params.bookId,
-            cardNo: req.params.cardNo,
-            branchId: req.params.branchId,
-            dateOut: req.params.dateOut
+            bookId: request.params.bookId,
+            cardNo: request.params.cardNo,
+            branchId: request.params.branchId,
+            dateOut: request.params.dateOut
         }, result = await service.override(loanId);
         response.status(result.status);
         response.send(result.message);
