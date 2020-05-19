@@ -30,6 +30,7 @@ exports.update = () => {
 
 };
 
-exports.delete = () => {
-
+exports.delete = publisherId => {
+    const query = 'DELETE FROM tbl_publisher WHERE publisherId = ?;';
+    return write(query, [publisherId]);
 };
