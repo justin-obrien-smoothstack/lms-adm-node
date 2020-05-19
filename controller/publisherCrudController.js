@@ -15,8 +15,14 @@ router.get('', () => {
 
 });
 
-router.put('', () => {
-
+router.put('/lms/admin/publisher', (request, response) => {
+    service.delete(request.params.publisherId).then(result => {
+        response.status(result.status);
+        response.send(result.message);
+    }).catch(error => {
+        response.status(500);
+        response.send('An unknown error occurred.');
+    })
 });
 
 router.delete('', () => {
