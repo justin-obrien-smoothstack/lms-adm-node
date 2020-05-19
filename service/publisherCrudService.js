@@ -22,7 +22,7 @@ exports.readAll = () => {
             responseAttributes.status = 500;
             responseAttributes.message = 'There was an error while attempting to ' +
                 'read publishers from the database.';
-            reject(responseAttributes);
+            resolve(responseAttributes);
         })
     })
 };
