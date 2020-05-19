@@ -26,7 +26,7 @@ exports.delete = (publisherId) => {
                 responseAttributes.status = 404;
                 responseAttributes.message =
                     `There exists no publisher with ID ${publisherId}.`;
-                reject(responseAttributes);
+                resolve(responseAttributes);
             } else {
                 dao.delete(publisherId).then(result => {
                     responseAttributes.status = 200;
@@ -39,7 +39,7 @@ exports.delete = (publisherId) => {
                     responseAttributes.message =
                         'There was an error while attempting to ' +
                         'delete that publisher from the database.';
-                    reject(responseAttributes);
+                    resolve(responseAttributes);
                 })
             }
         }).catch(error => {
@@ -47,7 +47,7 @@ exports.delete = (publisherId) => {
             responseAttributes.message =
                 'There was an error while attempting to ' +
                 'find that publisher in the database.';
-            reject(responseAttributes);
+            resolve(responseAttributes);
         })
     })
 };
