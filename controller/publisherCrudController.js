@@ -11,8 +11,14 @@ router.get('', () => {
 
 });
 
-router.get('', () => {
-
+router.get('/lms/admin/publishers/:publisherId', (request, response) => {
+    service.readAll(publisherId).then(result => {
+        response.status(result.status);
+        response.send(result.message);
+    }).catch(error => {
+        response.status(500);
+        response.send('An unknown error occurred.');
+    })
 });
 
 router.put('', () => {
