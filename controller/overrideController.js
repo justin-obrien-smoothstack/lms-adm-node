@@ -1,7 +1,7 @@
 'use strict';
 
 const router = require('express').Router(),
-    service = reqiure('../service/overrideService');
+    service = require('../service/overrideService');
 
 router.put('/lms/admin/loan/book/:bookId/borrower/:cardNo/branch/:branchId' +
     '/dateout/:dateOut', async (request, response) => {
