@@ -24,7 +24,7 @@ exports.readOne = (publisherId) => {
             responseAttributes.message =
             'There was an error while attempting to ' +
                 'read that publisher from the database.';
-            reject(responseAttributes);
+            resolve(responseAttributes);
         })
     })
 };
