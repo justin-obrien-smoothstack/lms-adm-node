@@ -80,7 +80,18 @@ exports.createBorrower = (borrower, res) => {
     }
 
     borrower.cardNo = result.insertId;
-    res.status(200).send(borrower);
+    res.status(200);
+    res.format({
+      "application/json": function () {
+        res.send(borrower);
+      },
+      "application/xml": function () {
+        res.send(jsontoxml(borrower));
+      },
+      "text/plain": function () {
+        res.send(borrower.toString());
+      },
+    });
     return;
   });
 };
