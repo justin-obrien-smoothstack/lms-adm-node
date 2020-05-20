@@ -23,6 +23,7 @@ exports.create = (book, cb) => {
                 responseAttributes.status = 400;
                 responseAttributes.message = `Error: There exists no ` +
                     `publisher with ID ${book.pubId}.`;
+                cb(responseAttributes);
             } else {
                 dao.create(book, error => {
                     if (error) {
@@ -34,10 +35,12 @@ exports.create = (book, cb) => {
                         responseAttributes.status = 201;
                         responseAttributes.message = book;
                     }
+                    cb(responseAttributes);
                 });
             }
-            cb(responseAttributes);
         }).catch(error => {
+            console.log('hi');
+            console.log(error);
             responseAttributes.status = 500;
             responseAttributes.message = 'There was an error while trying to ' +
                 'find this book\'s publisher in the database.';
