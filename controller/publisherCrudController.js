@@ -3,8 +3,15 @@
 const router = require('express').Router(),
     service = require('../service/publisherCrudService');
 
-router.post('', () => {
-
+router.post('/lms/admin/publisher', (request, response) => {
+    const publisher = request.body;
+    service.create(publisher).then(result => {
+        response.status(result.status);
+        response.send(result.message);
+    }).catch(error => {
+        response.status(500);
+        response.send('An unknown error occurred.');
+    })
 });
 
 router.get('/lms/admin/publishers/:publisherId', (request, response) => {
