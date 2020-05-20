@@ -6,9 +6,8 @@ const write = (query, parameters, cb) => {
     db.beginTransaction(transactionError => {
         if (transactionError) cb(transactionError);
         else db.query(query, parameters, (queryError, result) => {
-            if (queryError) db.rollback();
-            else db.commit();
-            cb(queryError, result);
+            if (queryError) db.rollback(() => cb(queryError, result));
+            else db.commit(() => cb(queryError, result));
         })
     })
 };

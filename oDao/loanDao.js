@@ -8,11 +8,9 @@ const write = (query, parameters) => {
             if (transactionError) return reject(transactionError);
             db.query(query, parameters, (queryError, result) => {
                 if (queryError) {
-                    db.rollback();
-                    return reject(queryError);
+                    db.rollback(() => { return reject(queryError); });
                 }
-                db.commit();
-                return resolve(result);
+                db.commit(() => { return resolve(result); });
             })
         })
     })
