@@ -23,8 +23,9 @@ exports.create = () => {
 
 };
 
-exports.read = () => {
-
+exports.read = (cb, bookId = '%') => {
+    const query = 'SELECT * FROM tbl_book WHERE bookId LIKE ?';
+    db.query(query, [bookId], (error, result) => cb(error, result))
 };
 
 exports.update = () => {
