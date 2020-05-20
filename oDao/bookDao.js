@@ -2,8 +2,15 @@
 
 const db = require('./db.js');
 
-const write = () => {
-
+const write = (query, parameters, cb) => {
+    db.beginTransaction(transactionError => {
+        if (transactionError) cb(transactionError);
+        else db.query(query, parameters, (queryError, result) => {
+            if (queryError) db.rollback();
+            else db.commit();
+            cb(queryError, result);
+        })
+    })
 };
 
 exports.create = () => {
@@ -19,6 +26,7 @@ exports.update = () => {
 
 };
 
-exports.delete = () => {
-
+exports.delete = (bookId, cb) => {
+    const query = 'DELETE FROM tbl_book WHERE bookId = ?;';
+    return write(query, [bookId], cb);
 };
