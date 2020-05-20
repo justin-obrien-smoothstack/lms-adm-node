@@ -14,6 +14,7 @@ app.use((req, res, next) => {
 });
 
 app.use(require("./controller/borrowerCrudController"));
-
+app.use(require("./controller/bookCrudController.js"));
+app.use(require("./controller/publisherCrudController.js"));
+app.use(require("./controller/overrideController.js"));
 app.listen(3000);
-console.log("Server listening on port 3000...");
