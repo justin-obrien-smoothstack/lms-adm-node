@@ -39,8 +39,6 @@ exports.create = (book, cb) => {
                 });
             }
         }).catch(error => {
-            console.log('hi');
-            console.log(error);
             responseAttributes.status = 500;
             responseAttributes.message = 'There was an error while trying to ' +
                 'find this book\'s publisher in the database.';
