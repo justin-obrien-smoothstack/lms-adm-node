@@ -84,7 +84,7 @@ exports.update = (book, cb) => {
                 });
             }
         }
-    }, bookId);
+    }, book.bookId);
 };
 
 exports.delete = () => {
