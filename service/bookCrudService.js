@@ -26,10 +26,12 @@ exports.delete = (bookId, cb) => {
             responseAttributes.message =
                 'There was an error while attempting to ' +
                 'find that book in the database.';
+                cb(responseAttributes);
         } else if (result.length === 0) {
             responseAttributes.status = 404;
             responseAttributes.message =
                 `There exists no book with ID ${bookId}.`;
+                cb(responseAttributes);
         } else {
             dao.delete(bookId, (error, result) => {
                 if (error) {
@@ -43,8 +45,8 @@ exports.delete = (bookId, cb) => {
                         `Book #${bookId} ` +
                         `was deleted from the database.`;
                 }
+                cb(responseAttributes);
             })
         }
     }, bookId);
-    cb(responseAttributes);
 };
