@@ -22,7 +22,7 @@ exports.read = (cb, bookId = '%') => {
     db.query(query, [bookId], (error, result) => cb(error, result))
 };
 
-exports.update = (book) => {
+exports.update = (book, cb) => {
     const query = 'UPDATE tbl_book SET title = ?, pubId = ? WHERE bookId = ?;',
         parameters = [book.title, book.pubId, book.bookId];
     return write(query, parameters, cb);

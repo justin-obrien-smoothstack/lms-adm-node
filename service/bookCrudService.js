@@ -19,6 +19,13 @@ exports.readAll = () => {
 
 exports.update = (book, cb) => {
     const responseAttributes = {};
+    if (book.bookId !== 0 && !book.bookId) {
+        responseAttributes.status = 400;
+        responseAttributes.message = 'Error: The field "bookId" ' +
+            'is required.';
+        cb(responseAttributes);
+        return;
+    }
     dao.read((error, result) => {
         if (error) {
             responseAttributes.status = 500;
