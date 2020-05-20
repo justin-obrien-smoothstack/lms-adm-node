@@ -57,7 +57,7 @@ exports.update = (book, cb) => {
                                     'There was an error while trying to ' +
                                     'update this book in the database.';
                             } else {
-                                responseAttributes.status = 201;
+                                responseAttributes.status = 200;
                                 responseAttributes.message = book;
                             }
                             cb(responseAttributes);
@@ -77,7 +77,7 @@ exports.update = (book, cb) => {
                             'There was an error while trying to ' +
                             'update this book in the database.';
                     } else {
-                        responseAttributes.status = 201;
+                        responseAttributes.status = 200;
                         responseAttributes.message = book;
                     }
                     cb(responseAttributes);
