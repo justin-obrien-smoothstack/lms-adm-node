@@ -18,8 +18,12 @@ const write = (query, parameters) => {
     })
 };
 
-exports.create = () => {
-
+exports.create = (publisher) => {
+    const query = 'INSERT INTO tbl_publisher ' +
+        '(publisherName, publisherAddress, publisherPhone) VALUES (?, ?, ?);',
+        parameters = [publisher.publisherName, publisher.publisherAddress,
+        publisher.publisherPhone]
+    return write(query, parameters);
 };
 
 exports.read = (publisherId = '%') => {
@@ -39,6 +43,7 @@ exports.update = (publisher) => {
     return write(query, parameters);
 };
 
-exports.delete = () => {
-
+exports.delete = publisherId => {
+    const query = 'DELETE FROM tbl_publisher WHERE publisherId = ?;';
+    return write(query, [publisherId]);
 };
