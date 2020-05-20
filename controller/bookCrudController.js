@@ -24,8 +24,11 @@ router.get('/lms/admin/books', (request, response) => {
     })
 });
 
-router.put('', () => {
-
+router.put('/lms/admin/book', (request, response) => {
+    service.update(request.body, (result) => {
+        response.status(result.status);
+        response.send(result.message);
+    })
 });
 
 router.delete('/lms/admin/books/:bookId', (request, response) => {
