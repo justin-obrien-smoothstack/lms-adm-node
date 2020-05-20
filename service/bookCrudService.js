@@ -6,7 +6,7 @@ exports.create = () => {
 
 };
 
-exports.readOne = (cb) => {
+exports.readOne = (bookId, cb) => {
     const responseAttributes = {};
     dao.read((error, result) => {
         if (error) {
