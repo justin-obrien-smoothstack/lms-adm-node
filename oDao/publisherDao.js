@@ -32,11 +32,15 @@ exports.read = (publisherId = '%') => {
         db.query(query, [publisherId], (error, result) => {
             return error ? reject(error) : resolve(result);
         })
-   })
+    })
 };
 
-exports.update = () => {
-
+exports.update = (publisher) => {
+    const query = 'UPDATE tbl_publisher SET publisherName = ?, ' +
+        'publisherAddress = ?, publisherPhone = ? WHERE publisherId = ?;',
+        parameters = [publisher.publisherName, publisher.publisherAddress,
+        publisher.publisherPhone, publisher.publisherId];
+    return write(query, parameters);
 };
 
 exports.delete = publisherId => {
