@@ -21,8 +21,10 @@ exports.read = () => {
 
 };
 
-exports.update = () => {
-
+exports.update = (book) => {
+    const query = 'UPDATE tbl_book SET title = ?, pubId = ? WHERE bookId = ?;',
+        parameters = [book.title, book.pubId, book.bookId];
+    return write(query, parameters, cb);
 };
 
 exports.delete = () => {
