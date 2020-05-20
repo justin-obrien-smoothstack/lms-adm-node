@@ -1,6 +1,8 @@
 const bodyParser = require('body-parser'), express = require('express'),
     app = express();
+const xmlparser = require('express-xml-bodyparser');
 
+app.use(xmlparser());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 app.use((req, res, next) => {
