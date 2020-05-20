@@ -9,5 +9,5 @@ app.use((req, res, next) => {
         "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
-app.use(require('./controller/publisherCrudController.js'));
+app.use(require('./controller/bookCrudController.js'));
 app.listen(3000);
