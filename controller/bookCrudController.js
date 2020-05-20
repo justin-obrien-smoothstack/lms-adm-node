@@ -7,8 +7,11 @@ router.post('', () => {
 
 });
 
-router.get('', () => {
-
+router.get('/lms/admin/books/:bookId', (request, response) => {
+    service.readOne(request.params.bookId, (result) => {
+        response.status(result.status);
+        response.send(result.message);
+    })
 });
 
 router.get('/lms/admin/books', (request, response) => {
