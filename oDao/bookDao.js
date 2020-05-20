@@ -19,14 +19,16 @@ exports.create = (book, cb) => {
     return write(query, parameters, cb);
 };
 
-exports.read = () => {
-
+exports.read = (cb, bookId = '%') => {
+    const query = 'SELECT * FROM tbl_book WHERE bookId LIKE ?';
+    db.query(query, [bookId], (error, result) => cb(error, result));
 };
 
 exports.update = () => {
 
 };
 
-exports.delete = () => {
-
+exports.delete = (bookId, cb) => {
+    const query = 'DELETE FROM tbl_book WHERE bookId = ?;';
+    return write(query, [bookId], cb);
 };
