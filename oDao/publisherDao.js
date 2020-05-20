@@ -31,9 +31,9 @@ exports.read = (publisherId = '%') => {
    })
 };
 
-    exports.update = () => {
+exports.update = () => {
 
-    };
+};
 
 exports.delete = publisherId => {
     const query = 'DELETE FROM tbl_publisher WHERE publisherId = ?;';
