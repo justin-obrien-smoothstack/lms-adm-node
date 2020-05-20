@@ -43,13 +43,13 @@ exports.readAll = () => {
 };
 
 exports.update = (branch) => {
-    const sql = "UPDATE tbl_library_branch SET branchName = ?, branchAddress = ? WHERE authorId = ?";
-    const parameters = [branch.branchName, branch.branchAddress];
+    const sql = "UPDATE tbl_library_branch SET branchName = ?, branchAddress = ? WHERE branchId = ?";
+    const parameters = [branch.branchName, branch.branchAddress, branch.branchId];
     return write(sql, parameters);
 };
 
-exports.delete = (branch) => {
+exports.delete = (branchId) => {
     const sql = "DELETE FROM tbl_library_branch WHERE branchId = ?";
-    const parameters = [branch.branchId];
+    const parameters = [branchId];
     return write(sql, parameters);
 };

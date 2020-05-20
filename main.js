@@ -12,6 +12,8 @@ app.use((req, res, next) => {
 
 app.use(require('./controller/authorController'));
 
+app.use(require('./controller/branchController'));
+
 app.listen(3000);
 
 console.log("server started at port 3000");

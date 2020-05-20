@@ -1,4 +1,4 @@
-const branchService = require("../services/branchService");
+const branchService = require("../service/branchService");
 let routes = require('express').Router();
 
 routes.get("/lms/admin/branches", (req,res) => {
@@ -52,8 +52,8 @@ routes.put("/lms/admin/branches", (req,res) => {
     })
 });
 
-routes.delete("/lms/admin/branches", (req,res) => {
-    branchService.delete(req.body)
+routes.delete("/lms/admin/branches/:id", (req,res) => {
+    branchService.deleteBranch(req.params.id)
     .then(function (result){
         res.status(result.status);
         res.send(result.message);

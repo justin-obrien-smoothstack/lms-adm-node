@@ -14,7 +14,7 @@ exports.readBranch = (id) => {
                 resolve(responseAttributes);
             } else {
                 responseAttributes.status = 200;
-                response.message = result;
+                responseAttributes.message = result;
                 resolve(responseAttributes);
             }
         })
@@ -36,7 +36,7 @@ exports.readAll = () => {
                 resolve(responseAttributes);
             } else {
                 responseAttributes.status = 200;
-                response.message = result;
+                responseAttributes.message = result;
                 resolve(responseAttributes);
             }
         })
@@ -80,7 +80,7 @@ exports.createBranch = (branch) => {
 exports.updateBranch = (branch) => {
     return new Promise((resolve, reject) => {
         let responseAttributes = {};
-        if (branch.branchName == undefined || branch.branchId == undefined || branch.branchAddres == undefined) {
+        if (branch.branchName == undefined || branch.branchId == undefined || branch.branchAddress == undefined) {
             responseAttributes.status = 400;
             responseAttributes.message = "neither branch name, id, nor address can be undefined";
             resolve(responseAttributes);
@@ -119,27 +119,27 @@ exports.updateBranch = (branch) => {
     });
 };
 
-exports.deletebranch = (branch) => {
+exports.deleteBranch = (branchId) => {
     return new Promise((resolve, reject) => {
         let responseAttributes = {};
 
-        if (branch.branchId == undefined) {
+        if (branchId == undefined) {
             responseAttributes.status = 400;
-            responseAttributes.message = "neither branch id cannot be undefined";
+            responseAttributes.message = "branch id cannot be undefined";
             resolve(responseAttributes);
         }
 
-        branchDao.read(branch.branchId)
+        branchDao.read(branchId)
         .then((result) => {
             if (result.length == 0) { // no record was found
                 responseAttributes.status = 404;
-                responseAttributes.message = `no branch with id ${branch.branchId} was found`;
+                responseAttributes.message = `no branch with id ${branchId} was found`;
                 resolve(responseAttributes);
             } else {
-                branchDao.delete(branch)
+                branchDao.delete(branchId)
                 .then((result) =>{
                     responseAttributes.status = 204;
-                    responseAttributes.message = `branch with id: ${branch.branchId} was deleted`;
+                    responseAttributes.message = `branch with id: ${branchId} was deleted`;
                     resolve(responseAttributes);                
                 })
                 .catch((error) => {
