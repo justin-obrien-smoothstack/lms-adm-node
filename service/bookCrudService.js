@@ -36,7 +36,7 @@ exports.update = (book, cb) => {
         } else if (result.length === 0) {
             responseAttributes.status = 404;
             responseAttributes.message =
-                `There exists no book with ID ${book.bookId}.`;
+                `Error: There exists no book with ID ${book.bookId}.`;
             cb(responseAttributes);
         } else {
             if (!book.title) {
