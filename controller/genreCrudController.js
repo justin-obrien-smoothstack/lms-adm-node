@@ -1,9 +1,9 @@
 let routes = require("express").Router();
-let service = require("../service/borrowerCrudService");
+let service = require("../service/genreCrudService");
 
-routes.get("/lms/admin/borrower", (req, res) => {
+routes.get("/lms/admin/genre", (req, res) => {
   service
-    .readAllBorrowers()
+    .readAllGenres()
     .then((result) => {
       res.status(result.status).send(result.body);
     })
@@ -12,9 +12,9 @@ routes.get("/lms/admin/borrower", (req, res) => {
     });
 });
 
-routes.get("/lms/admin/borrower/:cardNo", (req, res) => {
+routes.get("/lms/admin/genre/:id", (req, res) => {
   service
-    .readBorrower(req.params.cardNo)
+    .readGenre(req.params.id)
     .then((result) => {
       res.status(result.status).send(result.body);
     })
@@ -23,18 +23,18 @@ routes.get("/lms/admin/borrower/:cardNo", (req, res) => {
     });
 });
 
-routes.post("/lms/admin/borrower", (req, res) => {
-  service.createBorrower(req.body, res);
+routes.post("/lms/admin/genre", (req, res) => {
+  service.createGenre(req.body, res);
 });
 
-routes.put("/lms/admin/borrower", async (req, res) => {
-  let response = await service.updateBorrower(req.body);
+routes.put("/lms/admin/genre", async (req, res) => {
+  let response = await service.updateGenre(req.body);
   res.status(response.status).send(response.body);
 });
 
-routes.delete("/lms/admin/borrower/:cardNo", (req, res) => {
+routes.delete("/lms/admin/genre/:id", (req, res) => {
   service
-    .deleteBorrower(req.params.cardNo)
+    .deleteGenre(req.params.id)
     .then((result) => {
       res.status(result.status).send(result.body);
     })

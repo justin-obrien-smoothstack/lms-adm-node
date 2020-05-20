@@ -13,6 +13,7 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(require("./controller/genreCrudController"));
 app.use(require("./controller/borrowerCrudController"));
 app.use(require("./controller/bookCrudController.js"));
 app.use(require("./controller/publisherCrudController.js"));
