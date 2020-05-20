@@ -5,7 +5,7 @@ const dao = require('../oDao/bookDao.js'),
 
 const maxLength = 45;
 
-exports.create = (book) => {
+exports.create = (book, cb) => {
     const responseAttributes = {};
     if (!book.title) {
         responseAttributes.status = 400;
