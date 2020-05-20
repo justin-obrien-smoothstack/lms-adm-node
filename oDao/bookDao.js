@@ -2,8 +2,21 @@
 
 const db = require('./db.js');
 
-const write = () => {
-
+const write = (query, parameters, cb) => {
+    db.beginTransaction(transactionError => {
+        if (transactionError) cb(transactionError);
+        else {
+            db.query(query, parameters, (queryError, result) => {
+                if (queryError) {
+                    db.rollback();
+                    cb(queryError);
+                } else {
+                    db.commit();
+                    cb(result);
+                }
+            })
+        }
+    })
 };
 
 exports.create = () => {
