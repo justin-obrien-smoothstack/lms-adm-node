@@ -27,6 +27,6 @@ exports.update = () => {
 };
 
 exports.delete = (bookId, cb) => {
-    const query = 'DELETE FROM tbl_publisher WHERE publisherId = ?;';
+    const query = 'DELETE FROM tbl_book WHERE bookId = ?;';
     return write(query, [bookId], cb);
 };
