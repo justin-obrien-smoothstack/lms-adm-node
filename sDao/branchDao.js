@@ -24,10 +24,10 @@ exports.create = (branch) => {
     return write(sql, parameters);
 };
 
-exports.read = (branch) => {
+exports.read = (branchId) => {
     return new Promise((resolve, reject) => {
         let sql = 'SELECT * FROM tbl_library_branch WHERE branchId = ?;';
-        db.query(sql,branch.branchId,function(err,result) {
+        db.query(sql,branchId,function(err,result) {
             return err ? reject(err) : resolve(result);
         });
     })

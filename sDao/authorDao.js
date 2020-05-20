@@ -24,10 +24,10 @@ exports.create = (author) => {
     return write(sql, parameters);
 };
 
-exports.read = (author) => {
+exports.read = (authorId) => {
     return new Promise((resolve, reject) => {
         let sql = 'SELECT * FROM tbl_author WHERE authorId = ?;';
-        db.query(sql,author.authorId,function(err,result) {
+        db.query(sql,authorId,function(err,result) {
             return err ? reject(err) : resolve(result);
         });
     })
@@ -48,8 +48,8 @@ exports.update = (author) => {
     return write(sql, parameters);
 };
 
-exports.delete = (author) => {
+exports.delete = (authorId) => {
     const sql = "DELETE FROM tbl_author WHERE authorId = ?";
-    const parameters = [author.authorId];
+    const parameters = [authorId];
     return write(sql, parameters);
 };

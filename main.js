@@ -9,4 +9,9 @@ app.use((req, res, next) => {
         "Origin, X-Requested-With, Content-Type, Accept");
     next();
 });
+
+app.use(require('./controller/authorController'));
+
 app.listen(3000);
+
+console.log("server started at port 3000");
