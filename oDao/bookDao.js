@@ -13,13 +13,15 @@ const write = (query, parameters, cb) => {
     })
 };
 
-exports.create = () => {
-
+exports.create = (book, cb) => {
+    const query = 'INSERT INTO tbl_book (title, pubId) VALUES (?, ?);',
+        parameters = [book.title, book.pubId];
+    return write(query, parameters, cb);
 };
 
 exports.read = (cb, bookId = '%') => {
     const query = 'SELECT * FROM tbl_book WHERE bookId LIKE ?';
-    db.query(query, [bookId], (error, result) => cb(error, result))
+    db.query(query, [bookId], (error, result) => cb(error, result));
 };
 
 exports.update = (book, cb) => {
@@ -28,6 +30,7 @@ exports.update = (book, cb) => {
     return write(query, parameters, cb);
 };
 
-exports.delete = () => {
-
+exports.delete = (bookId, cb) => {
+    const query = 'DELETE FROM tbl_book WHERE bookId = ?;';
+    return write(query, [bookId], cb);
 };
