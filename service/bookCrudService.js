@@ -3,6 +3,8 @@
 const dao = require('../oDao/bookDao.js'),
     publisherDao = require('../oDao/publisherDao.js');
 
+const maxLength = 45;
+
 exports.create = (book) => {
     const responseAttributes = {};
     let skipRemaining = false;
