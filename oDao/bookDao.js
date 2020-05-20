@@ -13,8 +13,11 @@ const write = (query, parameters, cb) => {
     })
 };
 
-exports.create = () => {
-
+exports.create = (book) => {
+    const query = 'INSERT INTO tbl_book ' +
+        '(title, pubId) VALUES (?, ?);',
+        parameters = [book.title, book.pubId];
+    return write(query, parameters, cb);
 };
 
 exports.read = () => {
