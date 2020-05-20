@@ -1,6 +1,9 @@
 'use strict';
 
-const dao = require('../oDao/bookDao.js');
+const dao = require('../oDao/bookDao.js'),
+    publisherDao = require('../oDao/publisherDao.js');
+
+const maxLength = 45;
 
 exports.create = () => {
 
