@@ -1,4 +1,5 @@
 let routes = require("express").Router();
+const jsontoxml = require("jsontoxml");
 let service = require("../service/genreCrudService");
 
 routes.get("/lms/admin/genre", (req, res) => {
@@ -54,13 +55,13 @@ routes.put("/lms/admin/genre", async (req, res) => {
   res.status(response.status);
   res.format({
     "application/json": function () {
-      res.send(result.body);
+      res.send(response.body);
     },
     "application/xml": function () {
-      res.send(jsontoxml(result.body));
+      res.send(jsontoxml(response.body));
     },
     "text/plain": function () {
-      res.send(result.body.toString());
+      res.send(response.body.toString());
     },
   });
 });
