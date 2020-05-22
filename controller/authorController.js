@@ -1,5 +1,6 @@
 const authorService = require("../service/authorService");
 const jsontoxml = require("jsontoxml");
+var parseString = require('xml2js').parseString;
 let routes = require('express').Router();
 
 routes.get("/lms/admin/authors", (req,res) => {

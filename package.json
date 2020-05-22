@@ -27,6 +27,7 @@
     "express-xml-bodyparser": "^0.3.0",
     "jsontoxml": "^1.0.1",
     "moment": "^2.25.3",
-    "mysql": "^2.18.1"
+    "mysql": "^2.18.1",
+    "nodemon": "^2.0.4"
   }
 }
