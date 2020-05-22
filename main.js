@@ -12,10 +12,11 @@ app.use((req, res, next) => {
     next();
 });
 
+console.log("server started at port 3000");
 app.use(require('./controller/authorController'));
-
 app.use(require('./controller/branchController'));
-
+app.use(require('./controller/bookCrudController.js'));
+app.use(require('./controller/publisherCrudController.js'));
+app.use(require('./controller/overrideController.js'));
 app.listen(3000);
 
-console.log("server started at port 3000");
