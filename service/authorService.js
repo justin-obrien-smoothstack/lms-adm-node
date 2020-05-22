@@ -13,9 +13,16 @@ exports.readAuthor = (id) => {
                 responseAttributes.message = `author with id: ${id} does not exist`;
                 resolve(responseAttributes);
             } else {
-                responseAttributes.status = 200;
-                responseAttributes.message = result;
-                resolve(responseAttributes);
+                authorDao.readBooksByAuthor(id)
+                .then((res) => {
+                    result[0]['books'] = res;
+                    responseAttributes.status = 200;
+                    responseAttributes.message = result;
+                    resolve(responseAttributes);
+                }) 
+                .catch((err) => {
+                    reject(err);
+                });
             }
         })
         .catch((error) => {
@@ -25,16 +32,32 @@ exports.readAuthor = (id) => {
     });
 };
 
-exports.readAll = () => {
+let addBooksToAuthors = async (result) => {
+    return new Promise((resolve, reject) => {
+        authorDao.readBooksByAuthor(result['authorId'])
+        .then((res) => {
+            result['books'] = res;
+            resolve(result);
+        })
+        .catch((err) => {
+            reject(err);
+        });
+    });
+};
+
+exports.readAll = async () => {
     return new Promise( (resolve, reject) => {
         let responseAttributes = {};
         authorDao.readAll()
-        .then((result) => {
+        .then(async (result) => {
             if (result.length == 0) {
                 responseAttributes.status = 404;
                 responseAttributes.message = `no author records exist`;
                 resolve(responseAttributes);
             } else {
+                for (let i = 0; i < result.length; i++) {
+                    result[i] = await addBooksToAuthors(result[i]);
+                }
                 responseAttributes.status = 200;
                 responseAttributes.message = result;
                 resolve(responseAttributes);

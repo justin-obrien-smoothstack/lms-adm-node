@@ -33,6 +33,20 @@ exports.read = (authorId) => {
     })
 };
 
+exports.readBooksByAuthor = (authorId) => {
+    return new Promise((resolve, reject) => {
+        let sql = 'SELECT tbl_book.bookId, title from tbl_book\n'+
+        'INNER JOIN tbl_book_authors\n'+
+        'ON tbl_book_authors.bookId = tbl_book.bookId\n'+
+        'WHERE authorId = ?;';
+        db.query(sql,authorId,function(err,result) {
+            return err ? reject(err) : resolve(result);
+        });
+    })
+};
+
+
+
 exports.readAll = () => {
     return new Promise((resolve, reject) => {
         let sql = 'SELECT * FROM tbl_author;';
