@@ -1,8 +1,6 @@
 "use strict";
 
-const write = (db, query, parameters, cb) => db.query(query, parameters, cb);
-
-exports.read = (loanId, cb) => {
+exports.read = (db, loanId, cb) => {
   const query =
       "SELECT * FROM tbl_book_loans WHERE bookId LIKE ? AND cardNo LIKE ? AND branchId LIKE ? AND dateOut LIKE ?;",
     parameters = [
@@ -10,6 +8,20 @@ exports.read = (loanId, cb) => {
       loanId.cardNo,
       loanId.branchId,
       loanId.dateOut,
+    ];
+  db.query(query, parameters, (error, result) => cb(error, result));
+};
+
+exports.update = (db, loan, cb) => {
+  const query =
+      "UPDATE tbl_book_loans SET dueDate = ?, dateIn = ? WHERE bookId = ? AND cardNo = ? AND branchId = ? AND dateOut = ?",
+    parameters = [
+      loan.dueDate,
+      loan.dateIn,
+      loan.bookId,
+      loan.cardNo,
+      loan.branchId,
+      loan.dateOut,
     ];
   db.query(query, parameters, (error, result) => cb(error, result));
 };
