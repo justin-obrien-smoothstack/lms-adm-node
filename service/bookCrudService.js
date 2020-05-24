@@ -14,7 +14,7 @@ exports.deleteBook = async (bookId) => {
     deleteError: false,
   };
   let books;
-  db.beginTransaction((transactionError) => {
+  db.beginTransaction(async (transactionError) => {
     if (transactionError) {
       results.transactionError = true;
       throw results;
@@ -35,12 +35,12 @@ exports.deleteBook = async (bookId) => {
     }
     try {
       await bookDao.deleteBook(db, bookId);
-      db.commit(()=>{})
+      db.commit(() => {});
     } catch (deleteError) {
-        results.deleteError =true;
-        db.rollback(() => {
-            throw results;
-          });
+      results.deleteError = true;
+      db.rollback(() => {
+        throw results;
+      });
     }
   });
 };
