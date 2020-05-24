@@ -32,20 +32,20 @@ exports.deletePublisher = (publisherId) => {
         (readResult) => {
           if (readResult.length === 0) {
             results.publisherNotFound = true;
-            rollback(() => reject(results));
+            db.rollback(() => reject(results));
             return;
           }
           publisherDao.deletePublisher(db, publisherId).then(
-            (deleteResult) => commit(() => resolve(results)),
+            (deleteResult) => db.commit(() => resolve(results)),
             (deleteError) => {
               results.deleteError = true;
-              rollback(() => reject(results));
+              db.rollback(() => reject(results));
             }
           );
         },
         (readError) => {
           results.readError = true;
-          rollback(() => reject(results));
+          db.rollback(() => reject(results));
         }
       );
     });
