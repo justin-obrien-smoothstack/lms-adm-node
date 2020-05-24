@@ -23,4 +23,31 @@ router.get("/lms/admin/publishers", (request, response) => {
   );
 });
 
+router.delete("/lms/admin/publishers/:publisherId", (request, response) => {
+  publisherCrudService.deletePublisher(request.params.publisherId).then(
+    (result) => response.sendStatus(204),
+    (error) => {
+      if (error.readError) {
+        response
+          .status(500)
+          .send("There was an error while attempting to find the publisher.");
+        return;
+      }
+      if (error.publisherNotFound) {
+        response
+          .status(404)
+          .send(
+            `There is no publisher with ID ${request.params.publisherId} in the database.`
+          );
+        return;
+      }
+      if (error.deleteError) {
+        response
+          .status(500)
+          .send("There was an error while attempting to delete the publisher.");
+      }
+    }
+  );
+});
+
 module.exports = router;
