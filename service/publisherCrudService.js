@@ -36,7 +36,7 @@ exports.updatePublisher = (publisher) => {
         reject(results);
         return;
       }
-      publisherDao.readPublishers(db, publisherId).then(
+      publisherDao.readPublishers(db, publisher.publisherId).then(
         (readResult) => {
           if (readResult.length === 0) {
             results.publisherNotFound = true;
