@@ -1,6 +1,6 @@
 "use strict";
 
-const service = require("../service/bookCrudService"),
+const bookCrudService = require("../service/bookCrudService"),
   router = require("express").Router();
 
 module.exports = router;
