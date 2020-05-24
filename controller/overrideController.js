@@ -25,12 +25,12 @@ router.put(
         response
           .status(500)
           .send(
-            "There was an error while attempting to find the loan in the databse."
+            "There was an error while attempting to find the loan in the database."
           );
         return;
       }
       if (results.loanNotFound) {
-        response.status(404).send("That loan was not found in the database.");
+        response.status(404).send("That loan is not in the database.");
         return;
       }
       if (results.noDueDate) {
