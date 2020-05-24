@@ -1,6 +1,6 @@
 "use strict";
 
-const service = require("../service/publisherCrudService"),
+const publisherCrudService = require("../service/publisherCrudService"),
   router = require("express").Router(),
   jsontoxml = require("jsontoxml");
 
