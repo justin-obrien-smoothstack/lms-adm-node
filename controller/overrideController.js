@@ -38,7 +38,7 @@ router.put(
         return;
       }
       if (results.returnedOnTime) {
-        response.status(400).send("That loan was returned on time");
+        response.status(400).send("That loan was returned on time.");
         return;
       }
       if (results.updateError) {
