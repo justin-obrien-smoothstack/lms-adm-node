@@ -19,8 +19,10 @@ exports.updatePublisher = (db, publisher) => {
       publisher.publisherPhone,
       publisher.publisherId,
     ];
-  db.query(query, parameters, (error, result) => {
-    if (error) reject(error);
-    resolve(result);
+  return new Promise((resolve, reject) => {
+    db.query(query, parameters, (error, result) => {
+      if (error) reject(error);
+      resolve(result);
+    });
   });
 };
