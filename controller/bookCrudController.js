@@ -26,7 +26,9 @@ router.delete("/lms/admin/books/:bookId", async (request, response) => {
     if (error.bookNotFound) {
       response
         .status(404)
-        .send(`There is no book with ID ${bookId} in the database.`);
+        .send(
+          `There is no book with ID ${request.params.bookId} in the database.`
+        );
       return;
     }
     if (error.deleteError) {
