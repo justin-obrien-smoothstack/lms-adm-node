@@ -7,9 +7,5 @@ const db = require("./db"),
 const maxLength = 45;
 
 exports.readBooks = async (db) => {
-  try {
-    return await bookDao.readBooks(db);
-  } catch(error){
-    return null;
-  }
+  return await bookDao.readBooks(db);
 };
