@@ -12,7 +12,7 @@ app.use((req, res, next) => {
   );
   next();
 });
-app.use(require("./controller/bookCrudController.js"));
-app.use(require("./controller/publisherCrudController.js"));
-app.use(require("./controller/overrideController.js"));
+app.use(require("./controller/bookCrudController"));
+app.use(require("./controller/publisherCrudController"));
+app.use(require("./controller/overrideController"));
 app.listen(3000);
