@@ -13,30 +13,42 @@ router.put(
       dateOut: request.params.dateOut,
     };
     service.overrideDueDate(loanId, (results) => {
-      if (results.transactionError)
+      if (results.transactionError) {
         response
           .status(500)
           .send(
             "There was an error while attempting to start a database transaction."
           );
-      if (results.readError)
+        return;
+      }
+      if (results.readError) {
         response
           .status(500)
           .send(
             "There was an error while attempting to find the loan in the databse."
           );
-      if (results.loanNotFound)
+        return;
+      }
+      if (results.loanNotFound) {
         response.status(404).send("That loan was not found in the database.");
-      if (results.noDueDate)
+        return;
+      }
+      if (results.noDueDate) {
         response.status(400).send("That loan has no due date.");
-      if (results.returnedOnTime)
+        return;
+      }
+      if (results.returnedOnTime) {
         response.status(400).send("That loan was returned on time");
-      if (results.updateError)
+        return;
+      }
+      if (results.updateError) {
         response
           .status(500)
           .send(
             "There was an error while attempting to change the loan's due date."
           );
+        return;
+      }
       response.sendStatus(204);
     });
   }
