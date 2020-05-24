@@ -13,6 +13,7 @@ router.post("/lms/admin/book", async (request, response) => {
     }
     if (error.tooLong) {
       response.status(400).send("The maximum field length is 45 characters.");
+      return;
     }
     if (error.transactionError) {
       response
@@ -36,6 +37,7 @@ router.post("/lms/admin/book", async (request, response) => {
         .send(
           `There is no publisher with ID ${request.body.pubId} in the database.`
         );
+      return;
     }
     if (error.createError) {
       response
