@@ -15,6 +15,21 @@ exports.updatePublisher = (publisher) => {
     updateError: false,
   };
   return new Promise((resolve, reject) => {
+    if (!publisher.publisherName) {
+      results.noName = true;
+      reject(results);
+      return;
+    }
+    if (
+      publisher.publisherName.length > maxLength ||
+      (publisher.publisherAddress &&
+        publisher.publisherAddress.length > maxLength) ||
+      (publisher.publisherPhone && publisher.publisherPhone.length > maxLength)
+    ) {
+      results.tooLong = true;
+      reject(results);
+      return;
+    }
     db.beginTransaction((transactionError) => {
       if (transactionError) {
         results.transactionError = true;
@@ -28,10 +43,10 @@ exports.updatePublisher = (publisher) => {
             db.rollback(() => reject(results));
             return;
           }
-          publisherDao.deletePublisher(db, publisherId).then(
-            (deleteResult) => db.commit(() => resolve(results)),
-            (deleteError) => {
-              results.deleteError = true;
+          publisherDao.updatePublisher(db, publisher).then(
+            (udpateResult) => db.commit(() => resolve(results)),
+            (updateError) => {
+              results.updateError = true;
               db.rollback(() => reject(results));
             }
           );
