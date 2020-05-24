@@ -9,7 +9,7 @@ router.put("/lms/admin/publisher", (request, response) => {
     (result) => response.sendStatus(204),
     (error) => {
       if (error.fieldsMissing) {
-        response.status(400).send("The fields 'publisherId' and 'publisherName' is required.");
+        response.status(400).send("The fields 'publisherId' and 'publisherName' are required.");
         return;
       }
       if (error.tooLong) {
