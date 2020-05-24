@@ -34,7 +34,7 @@ router.put("/lms/admin/publisher", (request, response) => {
         response
           .status(404)
           .send(
-            `There is no publisher with ID ${request.params.publisherId} in the database.`
+            `There is no publisher with ID ${request.body.publisherId} in the database.`
           );
         return;
       }
