@@ -27,6 +27,14 @@ router.delete("/lms/admin/publishers/:publisherId", (request, response) => {
   publisherCrudService.deletePublisher(request.params.publisherId).then(
     (result) => response.sendStatus(204),
     (error) => {
+      if (error.transactionError) {
+        response
+          .status(500)
+          .send(
+            "There was an error while attempting to start a database transaction."
+          );
+        return;
+      }
       if (error.readError) {
         response
           .status(500)
