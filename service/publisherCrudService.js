@@ -28,7 +28,7 @@ exports.deletePublisher = (publisherId) => {
           reject(results);
           return;
         }
-        publisherDao.deletePublisher(publisherId).then(
+        publisherDao.deletePublisher(db, publisherId).then(
           (deleteResult) => resolve(results),
           (deleteError) => {
             results.deleteError = true;
