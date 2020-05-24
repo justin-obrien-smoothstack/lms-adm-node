@@ -6,6 +6,6 @@ const db = require("./db"),
 
 const maxLength = 45;
 
-exports.readBooks = async (db) => {
+exports.readBooks = async () => {
   return await bookDao.readBooks(db);
 };
