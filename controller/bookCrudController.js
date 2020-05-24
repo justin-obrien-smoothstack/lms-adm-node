@@ -1,7 +1,8 @@
 "use strict";
 
 const bookCrudService = require("../service/bookCrudService"),
-  router = require("express").Router();
+  router = require("express").Router(),
+  jsontoxml = require("jsontoxml");
 
 router.get("/lms/admin/books", async (request, response) => {
   let books;
@@ -13,7 +14,7 @@ router.get("/lms/admin/books", async (request, response) => {
       .send(
         "There was an error while attempting to retrieve book information from the database."
       );
-      return;
+    return;
   }
   response.status(200);
   response.format({
