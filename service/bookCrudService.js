@@ -6,11 +6,12 @@ const db = require("./db"),
 
 const maxLength = 45;
 
-exports.delete = async (bookId) => {
+exports.deleteBook = async (bookId) => {
   const results = {
     transactionError: true,
     readError: false,
     bookNotFound: false,
+    deleteError: false,
   };
   let books;
   db.beginTransaction((transactionError) => {
@@ -33,10 +34,13 @@ exports.delete = async (bookId) => {
       });
     }
     try {
-      return await bookDao.deleteBook(db, bookId);
+      await bookDao.deleteBook(db, bookId);
+      db.commit(()=>{})
     } catch (deleteError) {
         results.deleteError =true;
-        throw results;
+        db.rollback(() => {
+            throw results;
+          });
     }
   });
 };
