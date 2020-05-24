@@ -1,6 +1,6 @@
 'use strict';
 
-const db = require('./db.js');
+// const db = require('./db.js');
 
 const write = (query, parameters, cb) => {
     db.beginTransaction(transactionError => {
