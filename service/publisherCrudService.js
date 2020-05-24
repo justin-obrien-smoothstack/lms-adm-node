@@ -35,10 +35,10 @@ exports.createPublisher = (publisher) => {
         return;
       }
       publisherDao.createPublisher(db, publisher).then(
-        (createResult) => resolve(results),
+        (createResult) => db.commit(() => resolve(results)),
         (createError) => {
           results.createError = true;
-          reject(results);
+          db.rollback(() => reject(results));
         }
       );
     });
