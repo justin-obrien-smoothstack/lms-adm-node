@@ -8,9 +8,9 @@ const maxLength = 45;
 
 exports.createBook = (book) => {
   const results = {
-    transactionError: false,
     noTitle: false,
     tooLong: false,
+    transactionError: false,
     publisherReadError: false,
     publisherNotFound: false,
     createError: false,
