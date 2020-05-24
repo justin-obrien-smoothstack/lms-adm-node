@@ -5,3 +5,11 @@ const db = require("./db"),
   publisherDao = require("../oDao/publisherDao");
 
 const maxLength = 45;
+
+exports.readBooks = async (db) => {
+  try {
+    return await bookDao.readBooks(db);
+  } catch(error){
+    return null;
+  }
+};
