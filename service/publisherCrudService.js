@@ -7,7 +7,7 @@ const maxLength = 45;
 
 exports.updatePublisher = (publisher) => {
   const results = {
-    noName: false,
+    fieldsMissing: false,
     tooLong: false,
     transactionError: false,
     readError: false,
@@ -15,8 +15,11 @@ exports.updatePublisher = (publisher) => {
     updateError: false,
   };
   return new Promise((resolve, reject) => {
-    if (!publisher.publisherName) {
-      results.noName = true;
+    if (
+      !publisher.publisherName ||
+      (publisher.publisherId !== 0 && !publisher.publisherId)
+    ) {
+      results.fieldsMissing = true;
       reject(results);
       return;
     }

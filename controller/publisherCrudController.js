@@ -8,7 +8,7 @@ router.put("/lms/admin/publisher", (request, response) => {
   publisherCrudService.updatePublisher(request.body).then(
     (result) => response.sendStatus(204),
     (error) => {
-      if (error.noName) {
+      if (error.fieldsMissing) {
         response.status(400).send("The field 'publisherName' is required.");
         return;
       }
