@@ -6,6 +6,10 @@ const db = require("./db"),
 
 const maxLength = 45;
 
+exports.readBooks = async () => {
+  return await bookDao.readBooks(db);
+};
+
 exports.deleteBook = (bookId) => {
   const results = {
     transactionError: false,
