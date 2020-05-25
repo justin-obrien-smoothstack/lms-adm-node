@@ -21,6 +21,17 @@ exports.readBooks = (db, bookId = "%") => {
   });
 };
 
+exports.updateBook = (db, book) => {
+  const query = "UPDATE tbl_book SET title = ?, pubId = ? WHERE bookId = ?;",
+    parameters = [book.title, book.pubId, book.bookId];
+  return new Promise((resolve, reject) => {
+    db.query(query, parameters, (error, result) => {
+      if (error) reject(error);
+      resolve(result);
+    });
+  });
+};
+
 exports.deleteBook = (db, bookId) => {
   const query = "DELETE FROM tbl_book WHERE bookId = ?;";
   return new Promise((resolve, reject) => {
