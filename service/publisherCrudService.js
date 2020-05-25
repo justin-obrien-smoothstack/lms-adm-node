@@ -46,12 +46,7 @@ exports.createPublisher = (publisher) => {
 };
 
 exports.readPublishers = () => {
-  return new Promise((resolve, reject) => {
-    publisherDao.readPublishers(db).then(
-      (result) => resolve(result),
-      (error) => reject(error)
-    );
-  });
+  return publisherDao.readPublishers(db);
 };
 
 exports.updatePublisher = (publisher) => {
