@@ -1,45 +1,62 @@
-'use strict';
+"use strict";
 
-const dao = require('../oDao/loanDao.js'), moment = require('moment');
+const db = require("./db"),
+  loanDao = require("../oDao/loanDao"),
+  moment = require("moment");
 
-exports.override = async (loanId) => {
-    const result = {
-        status: 500,
-        message: 'There was an error while trying to ' +
-            'read the loan from the database.'
-    };
-    let loan;
-    loanId.dateOut = loanId.dateOut.replace('T', ' ').replace('_', ':');
-    try {
-        loan = (await dao.read(loanId.bookId,
-            loanId.cardNo, loanId.branchId, loanId.dateOut))[0];
-    } catch (e) {
-        return result;
+exports.overrideDueDate = (loanId, cb) => {
+  const results = {
+    transactionError: false,
+    readError: false,
+    loanNotFound: false,
+    noDueDate: false,
+    returnedOnTime: false,
+    updateError: false,
+  };
+  let loan;
+  db.beginTransaction((transactionError) => {
+    if (transactionError) {
+      results.transactionError = true;
+      cb(results);
+      return;
     }
-    if (loan === undefined) {
-        result.status = 404;
-        result.message = 'That loan was not found.';
-    }
-    else if (loan.dueDate === null) {
-        result.status = 400;
-        result.message = 'That loan has no due date.';
-    }
-    else if (loan.dateIn !== null && loan.dateIn <= Date.now()
-        && loan.dateIn <= loan.dueDate) {
-        result.status = 400;
-        result.message = 'That loan was returned on time.';
-    }
-    else {
-        try {
-            loan.dueDate.setDate(loan.dueDate.getDate() + 7);
-            loan.dueDate = moment(loan.dueDate).format('YYYY-MM-DD hh:mm:ss');
-            await dao.update(loan);
-            result.status = 200;
-            result.message = 'New due date: ' + loan.dueDate;
-        } catch (e) {
-            result.message = 'There was an error while trying to ' +
-                'update the loan in the database.';
+    loanId.dateOut = loanId.dateOut.replace("T", " ").replace("_", ":");
+    loanDao.readLoans(db, loanId, (readError, readResult) => {
+      if (readError) {
+        results.readError = true;
+        db.rollback(() => cb(results));
+        return;
+      }
+      loan = readResult[0];
+      if (!loan) {
+        results.loanNotFound = true;
+        db.rollback(() => cb(results));
+        return;
+      }
+      if (!loan.dueDate) {
+        results.noDueDate = true;
+        db.rollback(() => cb(results));
+        return;
+      }
+      if (
+        loan.dateIn &&
+        loan.dateIn <= Date.now() &&
+        loan.dateIn <= loan.dueDate
+      ) {
+        results.returnedOnTime = true;
+        db.rollback(() => cb(results));
+        return;
+      }
+      loan.dueDate.setDate(loan.dueDate.getDate() + 7);
+      loan.dueDate = moment(loan.dueDate).format("YYYY-MM-DD hh:mm:ss");
+      loanDao.updateLoan(db, loan, (updateError) => {
+        if (updateError) {
+          results.updateError = true;
+          db.rollback(() => cb(results));
+          return;
         }
-    }
-    return result;
-}
+        db.commit(() => cb(results));
+      });
+    });
+  });
+};
