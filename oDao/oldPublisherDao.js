@@ -1,7 +1,5 @@
 'use strict';
 
-const db = require('./db.js');
-
 const write = (query, parameters) => {
     return new Promise((resolve, reject) => {
         db.beginTransaction(transactionError => {
