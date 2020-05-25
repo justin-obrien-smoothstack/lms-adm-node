@@ -1,9 +1,6 @@
 const branchDao = require("../sDao/branchDao");
 const db = require("./db");
 
-const maxLength = 45;
-const minLength = 2;
-
 exports.readBranch = (id) => {
     return new Promise( (resolve, reject) => {
         branchDao.read(db,id)
@@ -46,9 +43,11 @@ exports.createBranch = (branch) => {
             .then((result) =>{
                 responseAttributes.status = 201;
                 responseAttributes.message = `branch with name ${branch.branchName} created`;
-                resolve(responseAttributes);                })
+                db.commit(() => resolve(responseAttributes));                
+            })
             .catch((error) => {
-                reject(error);
+                // db,rolreject(error);
+                db.rollback(() => {reject(error);})
             });
         });
     });
@@ -75,10 +74,10 @@ exports.updateBranch = (branch) => {
                     .then((result) =>{
                         responseAttributes.status = 202;
                         responseAttributes.message = `branch with name ${branch.branchName} updated`;
-                        resolve(responseAttributes);                
+                        db.commit(() => resolve(responseAttributes));
                     })
                     .catch((error) => {
-                        reject(error);
+                        db.rollback(() => {reject(error);})
                     });
                 });
             }
@@ -110,10 +109,10 @@ exports.deleteBranch = (branchId) => {
                     .then((result) =>{
                         responseAttributes.status = 204;
                         responseAttributes.message = `branch with id: ${branchId} was deleted`;
-                        resolve(responseAttributes);                
+                        db.commit(() => resolve(responseAttributes));
                     })
                     .catch((error) => {
-                        reject(error);
+                        db.rollback(() => {reject(error);})
                     });
                 });
             }

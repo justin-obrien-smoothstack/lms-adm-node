@@ -64,9 +64,10 @@ exports.createAuthor = (author) => {
             authorDao.create(db,author)
             .then((result) =>{
                 responseAttributes.message = `author with name ${author.authorName} created`;
-                resolve(responseAttributes);                })
+                db.commit(() => resolve(responseAttributes));
+             })
             .catch((error) => {
-                reject(error);
+                db.rollback(() => reject(error));
             });
         });
     });
@@ -93,10 +94,10 @@ exports.updateAuthor = (author) => {
                     .then((result) =>{
                         responseAttributes.status = 202;
                         responseAttributes.message = `author with name ${author.authorName} updated`;
-                        resolve(responseAttributes);                
+                        db.commit(() => resolve(responseAttributes));
                     })
                     .catch((error) => {
-                        reject(error);
+                        db.rollback(() => reject(error));
                     });
                 }
             })
@@ -128,10 +129,10 @@ exports.deleteAuthor = (authorId) => {
                     .then((result) =>{
                         responseAttributes.status = 204;
                         responseAttributes.message = `author with id: ${authorId} was deleted`;
-                        resolve(responseAttributes);                
+                        db.commit(() => resolve(responseAttributes));             
                     })
                     .catch((error) => {
-                        reject(error);
+                        db.rollback(() => reject(error));
                     });
                 });
             }
