@@ -9,3 +9,13 @@ exports.readPublishers = (db, publisherId = "%") => {
     });
   });
 };
+
+exports.deletePublisher = (db, publisherId) => {
+  const query = "DELETE FROM tbl_publisher WHERE publisherId = ?;";
+  return new Promise((resolve, reject) => {
+    db.query(query, [publisherId], (error, result) => {
+      if (error) reject(error);
+      resolve(result);
+    });
+  });
+};
