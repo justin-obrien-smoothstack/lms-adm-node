@@ -5,7 +5,7 @@ const bookCrudService = require("../service/bookCrudService"),
 
 router.put("/lms/admin/book", async (request, response) => {
   try {
-    await bookCrudService.updateBook();
+    await bookCrudService.updateBook(request.body);
   } catch (error) {
     if (error.fieldsMissing) {
       response
