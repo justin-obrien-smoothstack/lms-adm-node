@@ -2,11 +2,11 @@
 
 const router = require('express').Router(),
     jsontoxml = require('jsontoxml'),
-    service = require('../service/publisherCrudService');
+    overrideService = require('../service/publisherCrudService');
 
 router.post('/lms/admin/publisher', (request, response) => {
     const publisher = request.body;
-    service.create(publisher).then(result => {
+    overrideService.create(publisher).then(result => {
         response.status(result.status);
         response.format({
             'application/json': () => response.send(result.message),
@@ -19,7 +19,7 @@ router.post('/lms/admin/publisher', (request, response) => {
 });
 
 router.get('/lms/admin/publishers/:publisherId', (request, response) => {
-    service.readOne(request.params.publisherId).then(result => {
+    overrideService.readOne(request.params.publisherId).then(result => {
         response.status(result.status);
         response.format({
             'application/json': () => response.send(result.message),
@@ -32,7 +32,7 @@ router.get('/lms/admin/publishers/:publisherId', (request, response) => {
 });
 
 router.get('/lms/admin/publishers', (request, response) => {
-    service.readAll().then(result => {
+    overrideService.readAll().then(result => {
         response.status(result.status);
         response.format({
             'application/json': () => response.send(result.message),
@@ -45,7 +45,7 @@ router.get('/lms/admin/publishers', (request, response) => {
 });
 
 router.put('/lms/admin/publisher', (request, response) => {
-    service.update(request.body).then(result => {
+    overrideService.update(request.body).then(result => {
         response.status(result.status);
         response.format({
             'application/json': () => response.send(result.message),
@@ -58,7 +58,7 @@ router.put('/lms/admin/publisher', (request, response) => {
 });
 
 router.delete('/lms/admin/publishers/:publisherId', (request, response) => {
-    service.delete(request.params.publisherId).then(result => {
+    overrideService.delete(request.params.publisherId).then(result => {
         response.status(result.status);
         response.send(result.message);
     }).catch(error => {
