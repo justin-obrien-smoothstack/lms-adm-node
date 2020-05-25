@@ -1,161 +1,151 @@
-'use strict';
+"use strict";
 
-const dao = require('../oDao/publisherDao.js');
+const db = require("./db"),
+  publisherDao = require("../oDao/publisherDao");
 
 const maxLength = 45;
 
-exports.create = (publisher) => {
-    const responseAttributes = {};
-    return new Promise((resolve, reject) => {
-        if (!publisher.publisherName) {
-            responseAttributes.status = 400;
-            responseAttributes.message = 'Error: The field "publisherName" ' +
-                'is required.';
-            resolve(responseAttributes);
+exports.createPublisher = (publisher) => {
+  const results = {
+    noName: false,
+    tooLong: false,
+    transactionError: false,
+    createError: false,
+  };
+  return new Promise((resolve, reject) => {
+    if (!publisher.publisherName) {
+      results.noName = true;
+      reject(results);
+      return;
+    }
+    if (
+      publisher.publisherName.length > maxLength ||
+      (publisher.publisherAddress &&
+        publisher.publisherAddress.length > maxLength) ||
+      (publisher.publisherPhone && publisher.publisherPhone.length > maxLength)
+    ) {
+      results.tooLong = true;
+      reject(results);
+      return;
+    }
+    db.beginTransaction((transactionError) => {
+      if (transactionError) {
+        results.transactionError = true;
+        reject(results);
+        return;
+      }
+      publisherDao.createPublisher(db, publisher).then(
+        (createResult) => db.commit(() => resolve(results)),
+        (createError) => {
+          results.createError = true;
+          db.rollback(() => reject(results));
         }
-        if (publisher.publisherName.length > maxLength ||
-            publisher.publisherAddress &&
-            publisher.publisherAddress.length > maxLength ||
-            publisher.publisherPhone &&
-            publisher.publisherPhone.length > maxLength) {
-            responseAttributes.status = 400;
-            responseAttributes.message = `Error: The maximum field ` +
-                `length is ${maxLength} characters.`;
-            resolve(responseAttributes);
-        }
-        dao.create(publisher).then(result => {
-            responseAttributes.status = 201;
-            responseAttributes.message = publisher;
-            resolve(responseAttributes);
-        }).catch(error => {
-            responseAttributes.status = 500;
-            responseAttributes.message = 'There was an error while trying to ' +
-                'add this publisher to the database.';
-            resolve(responseAttributes);
-        })
-    })
+      );
+    });
+  });
 };
 
-exports.readOne = (publisherId) => {
-    const responseAttributes = {};
-    return new Promise((resolve, reject) => {
-        dao.read(publisherId).then(result => {
-            if (result.length !== 0) {
-                responseAttributes.status = 200;
-                responseAttributes.message = result[0];
-            } else {
-                responseAttributes.status = 404;
-                responseAttributes.message =
-                    `There exists no publisher with ID ${publisherId}.`;
+exports.readPublishers = () => {
+  return new Promise((resolve, reject) => {
+    publisherDao.readPublishers(db).then(
+      (result) => resolve(result),
+      (error) => reject(error)
+    );
+  });
+};
+
+exports.updatePublisher = (publisher) => {
+  const results = {
+    fieldsMissing: false,
+    tooLong: false,
+    transactionError: false,
+    readError: false,
+    publisherNotFound: false,
+    updateError: false,
+  };
+  return new Promise((resolve, reject) => {
+    if (
+      !publisher.publisherName ||
+      (publisher.publisherId !== 0 && !publisher.publisherId)
+    ) {
+      results.fieldsMissing = true;
+      reject(results);
+      return;
+    }
+    if (
+      publisher.publisherName.length > maxLength ||
+      (publisher.publisherAddress &&
+        publisher.publisherAddress.length > maxLength) ||
+      (publisher.publisherPhone && publisher.publisherPhone.length > maxLength)
+    ) {
+      results.tooLong = true;
+      reject(results);
+      return;
+    }
+    db.beginTransaction((transactionError) => {
+      if (transactionError) {
+        results.transactionError = true;
+        reject(results);
+        return;
+      }
+      publisherDao.readPublishers(db, publisher.publisherId).then(
+        (readResult) => {
+          if (readResult.length === 0) {
+            results.publisherNotFound = true;
+            db.rollback(() => reject(results));
+            return;
+          }
+          publisherDao.updatePublisher(db, publisher).then(
+            (udpateResult) => db.commit(() => resolve(results)),
+            (updateError) => {
+              results.updateError = true;
+              db.rollback(() => reject(results));
             }
-            resolve(responseAttributes);
-        }).catch(error => {
-            responseAttributes.status = 500;
-            responseAttributes.message =
-            'There was an error while attempting to ' +
-                'read that publisher from the database.';
-            resolve(responseAttributes);
-        })
-    })
-};
-
-exports.readAll = () => {
-    const responseAttributes = {};
-    return new Promise((resolve, reject) => {
-        dao.read().then(result => {
-            responseAttributes.status = 200
-            responseAttributes.message = result.length === 0 ?
-                'There are no publishers in the database.' : result;
-            resolve(responseAttributes);
-        }).catch(error => {
-            responseAttributes.status = 500;
-            responseAttributes.message = 'There was an error while attempting to ' +
-                'read publishers from the database.';
-            resolve(responseAttributes);
-        })
-    })
-};
-
-exports.update = (publisher) => {
-    const responseAttributes = {};
-    return new Promise((resolve, reject) => {
-        if (!(publisher.publisherName &&
-            (publisher.publisherId === 0 || publisher.publisherId))) {
-            responseAttributes.status = 400;
-            responseAttributes.message = 'Error: The fields "publisherId" ' +
-                'and "publisherName" are required.';
-            resolve(responseAttributes);
+          );
+        },
+        (readError) => {
+          results.readError = true;
+          db.rollback(() => reject(results));
         }
-        if (publisher.publisherName.length > maxLength ||
-            publisher.publisherAddress &&
-            publisher.publisherAddress.length > maxLength ||
-            publisher.publisherPhone &&
-            publisher.publisherPhone.length > maxLength) {
-            responseAttributes.status = 400;
-            responseAttributes.message = `Error: The maximum field ` +
-                `length is ${maxLength} characters.`;
-            resolve(responseAttributes);
-        }
-        dao.read(publisher.publisherId).then(result => {
-            if (result.length === 0) {
-                responseAttributes.status = 404;
-                responseAttributes.message =
-                    `There exists no publisher with ` +
-                    `ID ${publisher.publisherId}.`;
-                resolve(responseAttributes);
-            } else {
-                dao.update(publisher).then(result => {
-                    responseAttributes.status = 200;
-                    responseAttributes.message = `Publisher ` +
-                        `#${publisher.publisherId} was updated.`;
-                    resolve(responseAttributes);
-                }).catch(error => {
-                    responseAttributes.status = 500;
-                    responseAttributes.message = 'There was an error while ' +
-                        'trying to update that publisher in the database.';
-                    resolve(responseAttributes);
-                })
-            }
-        }).catch(error => {
-            responseAttributes.status = 500;
-            responseAttributes.message =
-                'There was an error while attempting to ' +
-                'find that publisher in the database.';
-            resolve(responseAttributes);
-        })
-    })
+      );
+    });
+  });
 };
 
-exports.delete = (publisherId) => {
-    const responseAttributes = {};
-    return new Promise((resolve, reject) => {
-        dao.read(publisherId).then(result => {
-            if (result.length === 0) {
-                responseAttributes.status = 404;
-                responseAttributes.message =
-                    `There exists no publisher with ID ${publisherId}.`;
-                resolve(responseAttributes);
-            } else {
-                dao.delete(publisherId).then(result => {
-                    responseAttributes.status = 200;
-                    responseAttributes.message =
-                        `Publisher #${publisherId} ` +
-                        `was deleted from the database.`;
-                    resolve(responseAttributes);
-                }).catch(error => {
-                    responseAttributes.status = 500;
-                    responseAttributes.message =
-                        'There was an error while attempting to ' +
-                        'delete that publisher from the database.';
-                    resolve(responseAttributes);
-                })
+exports.deletePublisher = (publisherId) => {
+  const results = {
+    transactionError: false,
+    readError: false,
+    publisherNotFound: false,
+    deleteError: false,
+  };
+  return new Promise((resolve, reject) => {
+    db.beginTransaction((transactionError) => {
+      if (transactionError) {
+        results.transactionError = true;
+        reject(results);
+        return;
+      }
+      publisherDao.readPublishers(db, publisherId).then(
+        (readResult) => {
+          if (readResult.length === 0) {
+            results.publisherNotFound = true;
+            db.rollback(() => reject(results));
+            return;
+          }
+          publisherDao.deletePublisher(db, publisherId).then(
+            (deleteResult) => db.commit(() => resolve(results)),
+            (deleteError) => {
+              results.deleteError = true;
+              db.rollback(() => reject(results));
             }
-        }).catch(error => {
-            responseAttributes.status = 500;
-            responseAttributes.message =
-                'There was an error while attempting to ' +
-                'find that publisher in the database.';
-            resolve(responseAttributes);
-        })
-    })
+          );
+        },
+        (readError) => {
+          results.readError = true;
+          db.rollback(() => reject(results));
+        }
+      );
+    });
+  });
 };
