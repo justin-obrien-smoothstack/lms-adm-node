@@ -1,4 +1,3 @@
-
 const bodyParser = require("body-parser"),
   express = require("express"),
   app = express();
@@ -13,14 +12,11 @@ app.use((req, res, next) => {
   );
   next();
 });
-
+app.use(require("./controller/genreCrudController"));
+app.use(require("./controller/borrowerCrudController"));
 app.use(require('./controller/authorController'));
 app.use(require('./controller/branchController'));
-app.use(require('./controller/bookCrudController.js'));
-app.use(require('./controller/publisherCrudController.js'));
-app.use(require('./controller/overrideController.js'));
 app.use(require("./controller/bookCrudController"));
 app.use(require("./controller/publisherCrudController"));
 app.use(require("./controller/overrideController"));
 app.listen(3000);
-
