@@ -6,18 +6,23 @@ let routes = require('express').Router();
 routes.get("/lms/admin/authors", (req,res) => {
     authorService.readAll()
     .then(function (result){
-        res.status(result.status);
-        res.format({
-            'application/json': function() {
-                res.send(result.message);
-            },
-            'application/xml': function() {
-                res.send(jsontoxml(result.message));
-            },
-            'text/plain': function() {
-                res.send(result.message.toString());
-            }
-        });
+        if (result.length == 0)
+        {
+            res.sendStatus(404);
+        }
+        else {
+            res.format({
+                'application/json': function() {
+                    res.send(result);
+                },
+                'application/xml': function() {
+                    res.send(jsontoxml(result));
+                },
+                'text/plain': function() {
+                    res.send(result.toString());
+                }
+            });
+        }
     })
     .catch(function (error) {
       res.sendStatus(500);
@@ -28,18 +33,23 @@ routes.get("/lms/admin/authors", (req,res) => {
 routes.get("/lms/admin/authors/:id", (req,res) => {
     authorService.readAuthor(req.params.id)
     .then(function (result){
-        res.status(result.status);
-        res.format({
-            'application/json': function() {
-                res.send(result.message);
-            },
-            'application/xml': function() {
-                res.send(jsontoxml(result.message));
-            },
-            'text/plain': function() {
-                res.send(result.message.toString());
-            }
-        });
+        if (result.length == 0)
+        {
+            res.sendStatus(404);
+        }
+        else {
+            res.format({
+                'application/json': function() {
+                    res.send(result);
+                },
+                'application/xml': function() {
+                    res.send(jsontoxml(result));
+                },
+                'text/plain': function() {
+                    res.send(result.toString());
+                }
+            });
+        }
     })
     .catch(function (error) {
       res.status(500);
@@ -49,19 +59,30 @@ routes.get("/lms/admin/authors/:id", (req,res) => {
 });
 
 routes.post("/lms/admin/authors", (req,res) => {
-    authorService.createAuthor(req.body)
-    .then(function (result){
-        res.status(result.status);
-        res.send(result.message);
-    })
-    .catch(function (error) {
-      res.status(500);
-      res.send("an unknown error occourred");
-      console.log(error);
-    })
+    if (req.body.authorName.length > 45 || req.body.authorName.length  < 3 || !req.body.authorName) {
+        res.status(400);
+        res.send("author name must be between 3 and 45 characters in length");
+    } else {
+        authorService.createAuthor(req.body)
+        .then(function (result){
+            res.status(201);
+            res.send(result);
+        })
+        .catch(function (error) {
+        res.status(500);
+        res.send("an unknown error occourred");
+        console.log(error);
+        });
+    }
 });
 
 routes.put("/lms/admin/authors", (req,res) => {
+    if (!req.body.authorName) {
+        res.status(400).send("author name required");
+    }
+    if (req.body.authorName.length > 45 || req.body.author.length < 3) {
+        res.status(400).send("author name must be between 3 and 45 characters in length");
+    }
     authorService.updateAuthor(req.body)
     .then(function (result){
         res.status(result.status);

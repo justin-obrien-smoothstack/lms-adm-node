@@ -1,206 +1,171 @@
-'use strict';
+"use strict";
 
-const dao = require('../oDao/bookDao.js'),
-    publisherDao = require('../oDao/publisherDao.js');
+const db = require("./db"),
+  bookDao = require("../oDao/bookDao"),
+  publisherDao = require("../oDao/publisherDao");
 
 const maxLength = 45;
 
-exports.create = (book, cb) => {
-    const responseAttributes = {};
+exports.createBook = (book) => {
+  const results = {
+    noTitle: false,
+    tooLong: false,
+    transactionError: false,
+    publisherReadError: false,
+    publisherNotFound: false,
+    createError: false,
+  };
+  let publishers;
+  return new Promise((resolve, reject) => {
     if (!book.title) {
-        responseAttributes.status = 400;
-        responseAttributes.message = 'Error: The field "title" ' +
-            'is required.';
-        cb(responseAttributes);
-    } else if (book.title.length > maxLength) {
-        responseAttributes.status = 400;
-        responseAttributes.message = `Error: The maximum field length is ` +
-            `${maxLength} characters.`;
-        cb(responseAttributes);
-    } else if (book.pubId === 0 || book.pubId) {
-        publisherDao.read(book.pubId).then(result => {
-            if (result.length == 0) {
-                responseAttributes.status = 400;
-                responseAttributes.message = `Error: There exists no ` +
-                    `publisher with ID ${book.pubId}.`;
-                cb(responseAttributes);
-            } else {
-                dao.create(book, error => {
-                    if (error) {
-                        responseAttributes.status = 500;
-                        responseAttributes.message =
-                            'There was an error while trying to ' +
-                            'add this book to the database.';
-                    } else {
-                        responseAttributes.status = 201;
-                        responseAttributes.message = book;
-                    }
-                    cb(responseAttributes);
-                });
-            }
-        }).catch(error => {
-            responseAttributes.status = 500;
-            responseAttributes.message = 'There was an error while trying to ' +
-                'find this book\'s publisher in the database.';
-            cb(responseAttributes);
-        });
-    } else {
-        dao.create(book, error => {
-            if (error) {
-                responseAttributes.status = 500;
-                responseAttributes.message =
-                    'There was an error while trying to ' +
-                    'add this book to the database.';
-            } else {
-                responseAttributes.status = 201;
-                responseAttributes.message = book;
-            }
-            cb(responseAttributes);
-        });
+      results.noTitle = true;
+      reject(results);
+      return;
     }
-};
-
-exports.readOne = (bookId, cb) => {
-    const responseAttributes = {};
-    dao.read((error, result) => {
-        if (error) {
-            responseAttributes.status = 500;
-            responseAttributes.message = 'There was an error while ' +
-            'attempting to read books from the database.';
-        } else if (result.length === 0) {
-            responseAttributes.status = 404;
-            responseAttributes.message = `There exists no book with ` +
-                `ID ${bookId}.`;
-        } else { 
-            responseAttributes.status = 200;
-            responseAttributes.message = result[0];
-        }
-        cb(responseAttributes);
-    }, bookId);
-};
-
-exports.readAll = (cb) => {
-    const responseAttributes = {};
-    dao.read((error, result) => {
-        if (error) {
-            responseAttributes.status = 500;
-            responseAttributes.message = 'There was an error while attempting to ' +
-                'read books from the database.';
-        } else {
-            responseAttributes.status = 200
-            responseAttributes.message = result.length === 0 ?
-                'There are no books in the database.' : result;
-        }
-        cb(responseAttributes);
-    })
-}
-
-exports.update = (book, cb) => {
-    const responseAttributes = {};
-    if (book.bookId !== 0 && !book.bookId) {
-        responseAttributes.status = 400;
-        responseAttributes.message = 'Error: The field "bookId" ' +
-            'is required.';
-        cb(responseAttributes);
+    if (book.title.length > maxLength) {
+      results.tooLong = true;
+      reject(results);
+      return;
+    }
+    db.beginTransaction(async (transactionError) => {
+      if (transactionError) {
+        results.transactionError = true;
+        reject(results);
         return;
-    }
-    dao.read((error, result) => {
-        if (error) {
-            responseAttributes.status = 500;
-            responseAttributes.message =
-                'There was an error while attempting to ' +
-                'find that book in the database.';
-            cb(responseAttributes);
-        } else if (result.length === 0) {
-            responseAttributes.status = 404;
-            responseAttributes.message =
-                `There exists no book with ID ${book.bookId}.`;
-            cb(responseAttributes);
-        } else {
-            if (!book.title) {
-                responseAttributes.status = 400;
-                responseAttributes.message = 'Error: The field "title" ' +
-                    'is required.';
-                cb(responseAttributes);
-            } else if (book.title.length > maxLength) {
-                responseAttributes.status = 400;
-                responseAttributes.message = `Error: The maximum field length is ` +
-                    `${maxLength} characters.`;
-                cb(responseAttributes);
-            } else if (book.pubId === 0 || book.pubId) {
-                publisherDao.read(book.pubId).then(result => {
-                    if (result.length == 0) {
-                        responseAttributes.status = 400;
-                        responseAttributes.message = `Error: There exists no ` +
-                            `publisher with ID ${book.pubId}.`;
-                        cb(responseAttributes);
-                    } else {
-                        dao.update(book, error => {
-                            if (error) {
-                                responseAttributes.status = 500;
-                                responseAttributes.message =
-                                    'There was an error while trying to ' +
-                                    'update this book in the database.';
-                            } else {
-                                responseAttributes.status = 200;
-                                responseAttributes.message = book;
-                            }
-                            cb(responseAttributes);
-                        });
-                    }
-                }).catch(error => {
-                    responseAttributes.status = 500;
-                    responseAttributes.message = 'There was an error while trying to ' +
-                        'find this book\'s publisher in the database.';
-                    cb(responseAttributes);
-                });
-            } else {
-                dao.update(book, error => {
-                    if (error) {
-                        responseAttributes.status = 500;
-                        responseAttributes.message =
-                            'There was an error while trying to ' +
-                            'update this book in the database.';
-                    } else {
-                        responseAttributes.status = 200;
-                        responseAttributes.message = book;
-                    }
-                    cb(responseAttributes);
-                });
-            }
+      }
+      if (book.pubId === 0 || book.pubId) {
+        try {
+          publishers = await publisherDao.readPublishers(db, book.pubId);
+        } catch (publisherReadError) {
+          results.publisherReadError = true;
+          db.rollback(() => reject(results));
+          return;
         }
-    }, book.bookId);
+        if (publishers.length === 0) {
+          results.publisherNotFound = true;
+          db.rollback(() => reject(results));
+          return;
+        }
+      }
+      try {
+        await bookDao.createBook(db, book);
+      } catch (createError) {
+        results.createError = true;
+        db.rollback(() => reject(results));
+        return;
+      }
+      db.commit(() => resolve(results));
+    });
+  });
 };
 
-exports.delete = (bookId, cb) => {
-    const responseAttributes = {};
-    dao.read((error, result) => {
-        if (error) {
-            responseAttributes.status = 500;
-            responseAttributes.message =
-                'There was an error while attempting to ' +
-                'find that book in the database.';
-                cb(responseAttributes);
-        } else if (result.length === 0) {
-            responseAttributes.status = 404;
-            responseAttributes.message =
-                `There exists no book with ID ${bookId}.`;
-                cb(responseAttributes);
-        } else {
-            dao.delete(bookId, (error, result) => {
-                if (error) {
-                    responseAttributes.status = 500;
-                    responseAttributes.message =
-                        'There was an error while attempting to ' +
-                        'delete that book from the database.';
-                } else {
-                    responseAttributes.status = 200;
-                    responseAttributes.message =
-                        `Book #${bookId} ` +
-                        `was deleted from the database.`;
-                }
-                cb(responseAttributes);
-            })
+exports.readBooks = async () => {
+  return await bookDao.readBooks(db);
+};
+
+exports.updateBook = (book) => {
+  const results = {
+    fieldsMissing: false,
+    tooLong: false,
+    transactionError: false,
+    readError: false,
+    bookNotFound: false,
+    publisherReadError: false,
+    publisherNotFound: false,
+    udpateError: false,
+  };
+  let books, publishers;
+  return new Promise((resolve, reject) => {
+    if (!book.title || (book.bookId !== 0 && !book.bookId)) {
+      results.fieldsMissing = true;
+      reject(results);
+      return;
+    }
+    if (book.title.length > maxLength) {
+      results.tooLong = true;
+      reject(results);
+      return;
+    }
+    db.beginTransaction(async (transactionError) => {
+      if (transactionError) {
+        results.transactionError = true;
+        reject(results);
+        return;
+      }
+      try {
+        books = await bookDao.readBooks(db, book.bookId);
+      } catch (readError) {
+        results.readError = true;
+        db.rollback(() => reject(results));
+        return;
+      }
+      if (books.length === 0) {
+        results.bookNotFound = true;
+        db.rollback(() => reject(results));
+        return;
+      }
+      if (book.pubId === 0 || book.pubId) {
+        try {
+          publishers = await publisherDao.readPublishers(db, book.pubId);
+        } catch (publisherReadError) {
+          results.publisherReadError = true;
+          db.rollback(() => reject(results));
+          return;
         }
-    }, bookId);
+        if (publishers.length === 0) {
+          results.publisherNotFound = true;
+          db.rollback(() => reject(results));
+          return;
+        }
+      }
+      try {
+        await bookDao.updateBook(db, book);
+      } catch (udpateError) {
+        results.udpateError = true;
+        db.rollback(() => reject(results));
+        return;
+      }
+      db.commit(() => resolve(results));
+    });
+  });
+};
+
+exports.deleteBook = (bookId) => {
+  const results = {
+    transactionError: false,
+    readError: false,
+    bookNotFound: false,
+    deleteError: false,
+  };
+  let books;
+  return new Promise((resolve, reject) => {
+    db.beginTransaction(async (transactionError) => {
+      if (transactionError) {
+        results.transactionError = true;
+        reject(results);
+        return;
+      }
+      try {
+        books = await bookDao.readBooks(db, bookId);
+      } catch (readError) {
+        results.readError = true;
+        db.rollback(() => reject(results));
+        return;
+      }
+      if (books.length === 0) {
+        results.bookNotFound = true;
+        db.rollback(() => reject(results));
+        return;
+      }
+      try {
+        await bookDao.deleteBook(db, bookId);
+        db.commit(() => resolve(results));
+        return;
+      } catch (deleteError) {
+        results.deleteError = true;
+        db.rollback(() => reject(results));
+        return;
+      }
+    });
+  });
 };

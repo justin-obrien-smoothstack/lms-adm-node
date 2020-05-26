@@ -5,18 +5,21 @@ let routes = require('express').Router();
 routes.get("/lms/admin/branches", (req,res) => {
     branchService.readAll()
     .then(function (result){
-        res.status(result.status);
-        res.format({
-            'application/json': function() {
-                res.send(result.message);
-            },
-            'application/xml': function() {
-                res.send(jsontoxml(result.message));
-            },
-            'text/plain': function() {
-                res.send(result.message.toString());
-            }
-        });
+        if (result.length == 0) {
+            res.sendStatus(404);
+        } else {
+            res.format({
+                'application/json': function() {
+                    res.status(200).send(result);
+                },
+                'application/xml': function() {
+                    res.status(200).send(jsontoxml(result));
+                },
+                'text/plain': function() {
+                    res.status(200).send(result.toString());
+                }
+            });
+        }
     })
     .catch(function (error) {
       res.sendStatus(500);
@@ -27,18 +30,21 @@ routes.get("/lms/admin/branches", (req,res) => {
 routes.get("/lms/admin/branches/:id", (req,res) => {
     branchService.readBranch(req.params.id)
     .then(function (result){
-        res.status(result.status);
-        res.format({
-            'application/json': function() {
-                res.send(result.message);
-            },
-            'application/xml': function() {
-                res.send(jsontoxml(result.message));
-            },
-            'text/plain': function() {
-                res.send(result.message.toString());
-            }
-        });
+        if (result.length == 0) {
+            res.sendStatus(404);
+        } else {
+            res.format({
+                'application/json': function() {
+                    res.status(200).send(result);
+                },
+                'application/xml': function() {
+                    res.status(200).send(jsontoxml(result));
+                },
+                'text/plain': function() {
+                    res.status(200).send(result.toString());
+                }
+            });
+        }
     })
     .catch(function (error) {
       res.status(500);
@@ -48,7 +54,18 @@ routes.get("/lms/admin/branches/:id", (req,res) => {
 });
 
 routes.post("/lms/admin/branches", (req,res) => {
-    console.log(req.body);
+    if (!req.body.branchName || !req.body.branchAddress) {
+        res.status(400).send("branch name and address cannot be empty.")
+    }
+
+    if (req.body.branchName.length > 45 || req.body.branchName.length < 3) {
+        res.status(400).send("branch name must be between 3 and 45 characters")
+    } 
+
+    if (req.body.branchAddress.length > 45 || req.body.branchAddress.length < 3) {
+        res.status(400).send("branch address must be between 3 and 45 characters")
+    } 
+
     branchService.createBranch(req.body)
     .then(function (result){
         res.status(result.status);
@@ -62,6 +79,18 @@ routes.post("/lms/admin/branches", (req,res) => {
 });
 
 routes.put("/lms/admin/branches", (req,res) => {
+    if (!req.body.branchName || !req.body.branchAddress || !req.body.branchId) {
+        res.status(400).send("branch name and address cannot be empty.")
+    }
+
+    if (req.body.branchName.length > 45 || req.body.branchName.length < 3) {
+        res.status(400).send("branch name must be between 3 and 45 characters")
+    } 
+
+    if (req.body.branchAddress.length > 45 || req.body.branchAddress.length < 3) {
+        res.status(400).send("branch address must be between 3 and 45 characters")
+    } 
+
     branchService.updateBranch(req.body)
     .then(function (result){
         res.status(result.status);

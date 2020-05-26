@@ -4,3 +4,4 @@ node_modules/
 
 *.postman_collection.json
 
+test/test.js
