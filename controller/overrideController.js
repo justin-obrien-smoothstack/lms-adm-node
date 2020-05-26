@@ -1,7 +1,26 @@
 "use strict";
 
-const service = require("../service/overrideService"),
+const overrideService = require("../service/overrideService"),
   router = require("express").Router();
+
+router.get("/lms/admin/loans", async (request, response) => {
+  let overridableLoans;
+  try {
+    overridableLoans = await overrideService.readOverridableLoans();
+  } catch (error) {
+    response
+      .status(500)
+      .send(
+        "There was an error while trying to retrieve loan information from the database."
+      );
+    return;
+  }
+  response.status(200);
+  response.format({
+    "application/json": () => response.send(overridableLoans),
+    "application/xml": () => response.send(jsontoxml(overridableLoans)),
+  });
+});
 
 router.put(
   "/lms/admin/loan/book/:bookId/borrower/:cardNo/branch/:branchId/dateout/:dateOut",
@@ -12,7 +31,7 @@ router.put(
       branchId: request.params.branchId,
       dateOut: request.params.dateOut,
     };
-    service.overrideDueDate(loanId, (results) => {
+    overrideService.overrideDueDate(loanId, (results) => {
       if (results.transactionError) {
         response
           .status(500)
