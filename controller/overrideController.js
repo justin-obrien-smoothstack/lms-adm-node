@@ -23,7 +23,7 @@ router.get("/lms/admin/loans", async (request, response) => {
 });
 
 router.put(
-  "/lms/admin/loan/book/:bookId/borrower/:cardNo/branch/:branchId/dateout/:dateOut",
+  "/lms/admin/loans/book/:bookId/borrower/:cardNo/branch/:branchId/dateout/:dateOut",
   (request, response) => {
     const loanId = {
       bookId: request.params.bookId,
