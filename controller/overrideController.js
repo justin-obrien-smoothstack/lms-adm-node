@@ -3,8 +3,6 @@
 const overrideService = require("../service/overrideService"),
   router = require("express").Router();
 
-// const corsOptions = { origin: "http://localhost:4200" };
-
 router.get("/lms/admin/loans", async (request, response) => {
   let overridableLoans;
   try {
