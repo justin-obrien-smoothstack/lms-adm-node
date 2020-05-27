@@ -1,6 +1,4 @@
-let db = require("./db");
-
-exports.readBorrower = (cardNo) => {
+exports.readBorrower = (db, cardNo) => {
   return new Promise((resolve, reject) => {
     db.query(
       "SELECT * FROM library.tbl_borrower where cardNo = ?",
@@ -12,7 +10,7 @@ exports.readBorrower = (cardNo) => {
   });
 };
 
-exports.readAllBorrowers = () => {
+exports.readAllBorrowers = (db) => {
   return new Promise((resolve, reject) => {
     db.query("SELECT * FROM library.tbl_borrower", (err, result) => {
       return err ? reject(err) : resolve(result);
@@ -20,77 +18,37 @@ exports.readAllBorrowers = () => {
   });
 };
 
-exports.updateBorrower = (borrower) => {
+exports.updateBorrower = (db, borrower) => {
   return new Promise((resolve, reject) => {
-    db.beginTransaction((err) => {
-      if (err) return reject(err);
-      db.query(
-        "update library.tbl_borrower SET name = ?, address = ?, phone = ? WHERE cardNo = ?",
-        [borrower.name, borrower.address, borrower.phone, borrower.cardNo],
-        (err, result) => {
-          if (err) {
-            db.rollback();
-            return reject(err);
-          }
-          db.commit();
-          return resolve(result);
-        }
-      );
-    });
+    db.query(
+      "update library.tbl_borrower SET name = ?, address = ?, phone = ? WHERE cardNo = ?",
+      [borrower.name, borrower.address, borrower.phone, borrower.cardNo],
+      (err, result) => {
+        return err ? reject(err) : resolve(result);
+      }
+    );
   });
 };
 
-exports.deleteBorrower = (cardNo) => {
+exports.deleteBorrower = (db, cardNo) => {
   return new Promise((resolve, reject) => {
-    db.beginTransaction((err) => {
-      if (err) return reject(err);
-      db.query(
-        "DELETE FROM library.tbl_book_loans WHERE cardNo = ?",
-        [cardNo],
-        (err, result) => {
-          if (err) {
-            db.rollback();
-            return reject(err);
-          }
-
-          db.query(
-            "DELETE FROM library.tbl_borrower WHERE cardNo = ?",
-            [cardNo],
-            (err, result) => {
-              if (err) {
-                db.rollback();
-                return reject(err);
-              }
-              db.commit(function (err) {
-                if (err) {
-                  db.rollback(function () {
-                    reject(err);
-                  });
-                }
-                db.end();
-                resolve(result);
-              });
-            }
-          );
-        }
-      );
-    });
+    db.query(
+      "DELETE FROM library.tbl_borrower WHERE cardNo = ?",
+      [cardNo],
+      (err, result) => {
+        return err ? reject(err) : resolve(result);
+      }
+    );
   });
 };
 
-exports.createBorrower = (borrower, cb) => {
-  db.beginTransaction((err) => {
-    if (err) return cb(err);
+exports.createBorrower = (db, borrower) => {
+  return new Promise((resolve, reject) => {
     db.query(
       "Insert into library.tbl_borrower (name, address, phone) VALUES (?, ?, ?)",
       [borrower.name, borrower.address, borrower.phone],
       (err, result) => {
-        if (err) {
-          db.rollback();
-          return cb(err, result);
-        }
-        db.commit();
-        return cb(err, result);
+        return err ? reject(err) : resolve(result);
       }
     );
   });
