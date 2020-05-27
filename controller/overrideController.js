@@ -1,10 +1,9 @@
 "use strict";
 
 const overrideService = require("../service/overrideService"),
-  router = require("express").Router(),
-  cors = require("cors");
+  router = require("express").Router();
 
-const corsOptions = { origin: "http://localhost:4200" };
+// const corsOptions = { origin: "http://localhost:4200" };
 
 router.get("/lms/admin/loans", async (request, response) => {
   let overridableLoans;
@@ -27,7 +26,6 @@ router.get("/lms/admin/loans", async (request, response) => {
 
 router.put(
   "/lms/admin/loans/book/:bookId/borrower/:cardNo/branch/:branchId/dateout/:dateOut",
-  cors(corsOptions),
   (request, response) => {
     const loanId = {
       bookId: request.params.bookId,
