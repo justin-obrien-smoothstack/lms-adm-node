@@ -10,12 +10,13 @@ app.use((req, res, next) => {
     "Access-Control-Allow-Headers",
     "Origin, X-Requested-With, Content-Type, Accept"
   );
+  res.header("Access-Control-Allow-Methods", "PUT, POST, GET, DELETE, OPTIONS");
   next();
 });
 app.use(require("./controller/genreCrudController"));
 app.use(require("./controller/borrowerCrudController"));
-app.use(require('./controller/authorController'));
-app.use(require('./controller/branchController'));
+app.use(require("./controller/authorController"));
+app.use(require("./controller/branchController"));
 app.use(require("./controller/bookCrudController"));
 app.use(require("./controller/publisherCrudController"));
 app.use(require("./controller/overrideController"));
