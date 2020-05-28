@@ -78,7 +78,7 @@ exports.readPublishers = () => {
         publisher.bookIds = [];
         for (const book of books) publisher.bookIds.push(book.bookId);
       }
-      db.commit(() => resolve(results));
+      db.commit(() => resolve(publishers));
     });
   });
 };
