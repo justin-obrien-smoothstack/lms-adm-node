@@ -11,10 +11,11 @@ exports.createBook = (db, book) => {
   });
 };
 
-exports.readBooks = (db, bookId = "%") => {
-  const query = "SELECT * FROM tbl_book WHERE bookId LIKE ?";
+exports.readBooks = (db, bookId = "%", pubId = "%") => {
+  const query = "SELECT * FROM tbl_book WHERE bookId LIKE ? AND pubId LIKE ?",
+    parameters = [bookId, pubId];
   return new Promise((resolve, reject) => {
-    db.query(query, [bookId], (error, result) => {
+    db.query(query, parameters, (error, result) => {
       if (error) reject(error);
       resolve(result);
     });
