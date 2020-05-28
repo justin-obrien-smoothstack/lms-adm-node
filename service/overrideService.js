@@ -52,7 +52,7 @@ exports.overrideDueDate = (loanId, cb) => {
         return;
       }
       loan.dueDate.setDate(loan.dueDate.getDate() + 7);
-      loan.dueDate = moment(loan.dueDate).format("YYYY-MM-DD hh:mm:ss");
+      loan.dueDate = moment(loan.dueDate).format("YYYY-MM-DD HH:mm:ss");
       loanDao.updateLoan(db, loan, (updateError) => {
         if (updateError) {
           results.updateError = true;
