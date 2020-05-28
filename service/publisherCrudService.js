@@ -67,7 +67,7 @@ exports.readPublishers = () => {
         db.rollback(() => reject(results));
         return;
       }
-      for (publisher in publishers) {
+      for (const publisher of publishers) {
         try {
           books = await bookDao.readBooks(db, "%", publisher.publisherId);
         } catch (error) {
@@ -76,7 +76,7 @@ exports.readPublishers = () => {
           return;
         }
         publisher.bookIds = [];
-        for (book in books) publisher.bookIds.push(book.bookId);
+        for (const book of books) publisher.bookIds.push(book.bookId);
       }
       db.commit(() => resolve(results));
     });
