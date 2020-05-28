@@ -49,7 +49,7 @@ exports.createPublisher = (publisher) => {
 exports.readPublishers = () => {
   const results = {
     transactionError: false,
-    readPublisherError: false,
+    readPublishersError: false,
     readBooksError: false,
   };
   let publishers, books;
@@ -63,7 +63,7 @@ exports.readPublishers = () => {
       try {
         publishers = await publisherDao.readPublishers(db);
       } catch (error) {
-        results.readPublisherError = true;
+        results.readPublishersError = true;
         db.rollback(() => reject(results));
         return;
       }

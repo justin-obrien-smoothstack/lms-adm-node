@@ -36,7 +36,42 @@ router.post("/lms/admin/publisher", (request, response) => {
   );
 });
 
-router.get("/lms/admin/publishers", (request, response) => {
+router.get("/lms/admin/publishers", async (request, response) => {
+  let publishers;
+  try {
+    publishers = await publisherCrudService.readPublishers();
+  } catch (error) {
+    if (error.transactionError) {
+      response
+        .status(500)
+        .send(
+          "There was an error while attempting to start a database transaction."
+        );
+      return;
+    }
+    if (error.readPublishersError) {
+      response
+        .status(500)
+        .send(
+          "There was an error while attempting to retrieve publisher information."
+        );
+      return;
+    }
+    if (error.readBooksError) {
+      response
+        .status(500)
+        .send(
+          "There was an error while attempting to retrieve book information."
+        );
+      return;
+    }
+    response.status(200);
+    response.format({
+      "application/json": () => response.send(publishers),
+      "application/xml": () => response.send(jsontoxml(publishers)),
+    });
+  }
+
   publisherCrudService.readPublishers().then(
     (result) => {
       response.status(200);
@@ -60,7 +95,9 @@ router.put("/lms/admin/publisher", (request, response) => {
     (result) => response.sendStatus(204),
     (error) => {
       if (error.fieldsMissing) {
-        response.status(400).send("The fields 'publisherId' and 'publisherName' are required.");
+        response
+          .status(400)
+          .send("The fields 'publisherId' and 'publisherName' are required.");
         return;
       }
       if (error.tooLong) {
