@@ -1,7 +1,8 @@
 "use strict";
 
 const db = require("./db"),
-  publisherDao = require("../oDao/publisherDao");
+  publisherDao = require("../oDao/publisherDao"),
+  bookDao = require("../oDao/bookDao");
 
 const maxLength = 45;
 
