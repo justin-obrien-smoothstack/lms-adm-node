@@ -47,7 +47,40 @@ exports.createPublisher = (publisher) => {
 };
 
 exports.readPublishers = () => {
-  return publisherDao.readPublishers(db);
+  const results = {
+    transactionError: false,
+    readPublisherError: false,
+    readBooksError: false,
+  };
+  let publishers, books;
+  return new Promise((resolve, reject) => {
+    db.beginTransaction(async (transactionError) => {
+      if (transactionError) {
+        results.transactionError = true;
+        reject(results);
+        return;
+      }
+      try {
+        publishers = await publisherDao.readPublishers(db);
+      } catch (error) {
+        results.readPublisherError = true;
+        db.rollback(() => reject(results));
+        return;
+      }
+      for (publisher in publishers) {
+        try {
+          books = await bookDao.readBooks(db, "%", publisher.publisherId);
+        } catch (error) {
+          results.readBooksError = true;
+          db.rollback(() => reject(results));
+          return;
+        }
+        publisher.bookIds = [];
+        for (book in books) publisher.bookIds.push(book.bookId);
+      }
+      db.commit(() => resolve(results));
+    });
+  });
 };
 
 exports.updatePublisher = (publisher) => {
