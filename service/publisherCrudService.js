@@ -29,19 +29,19 @@ exports.createPublisher = (publisher) => {
       reject(results);
       return;
     }
-    db.beginTransaction((transactionError) => {
+    db.beginTransaction(async (transactionError) => {
       if (transactionError) {
         results.transactionError = true;
         reject(results);
         return;
       }
-      publisherDao.createPublisher(db, publisher).then(
-        (createResult) => db.commit(() => resolve(results)),
-        (createError) => {
-          results.createError = true;
-          db.rollback(() => reject(results));
-        }
-      );
+      try {
+        publisherDao.createPublisher(db, publisher);
+      } catch (error) {
+        results.createError = true;
+        db.rollback(() => reject(results));
+      }
+      db.commit(() => resolve(results));
     });
   });
 };
