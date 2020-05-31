@@ -28,7 +28,31 @@ router.post("/lms/admin/publisher", async (request, response) => {
       response
         .status(500)
         .send(
-          "There was an error while attempting to add the publisher information."
+          "There was an error while attempting to create a database entry."
+        );
+      return;
+    }
+    if (error.readBooksError) {
+      response
+        .status(500)
+        .send(
+          "There was an error while attempting to find the publisher's books in the database."
+        );
+      return;
+    }
+    if (error.bookNotFound !== undefined) {
+      response
+        .status(404)
+        .send(
+          `There is no book with ID ${error.bookNotFound} in the database.`
+        );
+      return;
+    }
+    if (error.updateBookError) {
+      response
+        .status(500)
+        .send(
+          "There was an error while attempting to update book information."
         );
       return;
     }
