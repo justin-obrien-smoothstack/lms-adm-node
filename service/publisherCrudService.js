@@ -99,7 +99,7 @@ exports.readPublishers = () => {
       }
       for (const publisher of publishers) {
         try {
-          books = await bookDao.readBooks(db, "%", publisher.publisherId);
+          books = await bookDao.readBooks(db, "%", publisher.publisherId, false);
         } catch (error) {
           results.readBooksError = true;
           db.rollback(() => reject(results));
