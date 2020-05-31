@@ -99,7 +99,12 @@ exports.readPublishers = () => {
       }
       for (const publisher of publishers) {
         try {
-          books = await bookDao.readBooks(db, "%", publisher.publisherId, false);
+          books = await bookDao.readBooks(
+            db,
+            "%",
+            publisher.publisherId,
+            false
+          );
         } catch (error) {
           results.readBooksError = true;
           db.rollback(() => reject(results));
@@ -122,6 +127,7 @@ exports.updatePublisher = (publisher) => {
     publisherNotFound: false,
     updateError: false,
   };
+  let existingPublisher;
   return new Promise((resolve, reject) => {
     if (
       !publisher.publisherName ||
@@ -141,32 +147,35 @@ exports.updatePublisher = (publisher) => {
       reject(results);
       return;
     }
-    db.beginTransaction((transactionError) => {
+    db.beginTransaction(async (transactionError) => {
       if (transactionError) {
         results.transactionError = true;
         reject(results);
         return;
       }
-      publisherDao.readPublishers(db, publisher.publisherId).then(
-        (readResult) => {
-          if (readResult.length === 0) {
-            results.publisherNotFound = true;
-            db.rollback(() => reject(results));
-            return;
-          }
-          publisherDao.updatePublisher(db, publisher).then(
-            (udpateResult) => db.commit(() => resolve(results)),
-            (updateError) => {
-              results.updateError = true;
-              db.rollback(() => reject(results));
-            }
-          );
-        },
-        (readError) => {
-          results.readError = true;
-          db.rollback(() => reject(results));
-        }
-      );
+      try {
+        existingPublisher = await publisherDao.readPublishers(
+          db,
+          publisher.publisherId
+        );
+      } catch (error) {
+        results.readError = true;
+        db.rollback(() => reject(results));
+        return;
+      }
+      if (existingPublisher.length === 0) {
+        results.publisherNotFound = true;
+        db.rollback(() => reject(results));
+        return;
+      }
+      try {
+        publisherDao.updatePublisher(db, publisher);
+      } catch (error) {
+        results.updateError = true;
+        db.rollback(() => reject(results));
+        return;
+      }
+      db.commit(() => resolve(results));
     });
   });
 };
