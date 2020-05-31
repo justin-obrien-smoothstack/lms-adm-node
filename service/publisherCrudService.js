@@ -12,7 +12,11 @@ exports.createPublisher = (publisher) => {
     tooLong: false,
     transactionError: false,
     createError: false,
+    readBooksError: false,
+    bookNotFound: undefined,
+    updateBooksError: false,
   };
+  let publisherId, book;
   return new Promise((resolve, reject) => {
     if (!publisher.publisherName) {
       results.noName = true;
@@ -36,10 +40,34 @@ exports.createPublisher = (publisher) => {
         return;
       }
       try {
-        await publisherDao.createPublisher(db, publisher);
+        publisherId = (await publisherDao.createPublisher(db, publisher))
+          .insertId;
       } catch (error) {
         results.createError = true;
         db.rollback(() => reject(results));
+        return;
+      }
+      for (const bookId of publisher.bookIds) {
+        try {
+          book = await bookDao.readBooks(db, bookId);
+        } catch (error) {
+          results.readBooksError = true;
+          db.rollback(() => reject(results));
+          return;
+        }
+        if (book.size === 0) {
+          results.bookNotFound = bookId;
+          db.rollback(() => reject(results));
+          return;
+        }
+        book.pubId = publisherId;
+        try {
+          await bookDao.updateBook(db, book);
+        } catch (error) {
+          results.updateBooksError = true;
+          db.rollback(() => reject(results));
+          return;
+        }
       }
       db.commit(() => resolve(results));
     });
