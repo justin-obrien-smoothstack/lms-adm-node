@@ -60,13 +60,15 @@ exports.createPublisher = (publisher) => {
           db.rollback(() => reject(results));
           return;
         }
-        book.pubId = publisherId;
-        try {
-          await bookDao.updateBook(db, book);
-        } catch (error) {
-          results.updateBooksError = true;
-          db.rollback(() => reject(results));
-          return;
+        if (book.pubId !== publisherId) {
+          book.pubId = publisherId;
+          try {
+            await bookDao.updateBook(db, book);
+          } catch (error) {
+            results.updateBooksError = true;
+            db.rollback(() => reject(results));
+            return;
+          }
         }
       }
       db.commit(() => resolve(results));
