@@ -14,7 +14,6 @@ exports.createPublisher = (publisher) => {
     createError: false,
     readBooksError: false,
     bookNotFound: false,
-    bookNotFoundValue: null,
     updateBooksError: false,
   };
   let publisherId, book;
