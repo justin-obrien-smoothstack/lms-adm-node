@@ -36,7 +36,7 @@ exports.createPublisher = (publisher) => {
         return;
       }
       try {
-        publisherDao.createPublisher(db, publisher);
+        await publisherDao.createPublisher(db, publisher);
       } catch (error) {
         results.createError = true;
         db.rollback(() => reject(results));
