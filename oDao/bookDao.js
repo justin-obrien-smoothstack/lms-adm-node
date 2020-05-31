@@ -20,10 +20,10 @@ exports.createBook = (db, book) => {
   });
 };
 
-exports.readBooks = (db, bookId = "%", pubId = "%", includeNoPub = true) => {
+exports.readBooks = (db, bookId = "%", pubId = "%", includeNullPubId = true) => {
   const parameters = [bookId, pubId];
   let query = "SELECT * FROM tbl_book WHERE bookId LIKE ? AND (pubId LIKE ?";
-  if (includeNoPub) query += " OR pubId IS NULL";
+  if (includeNullPubId) query += " OR pubId IS NULL";
   query += ");";
   return doQuery(db, query, parameters);
 };

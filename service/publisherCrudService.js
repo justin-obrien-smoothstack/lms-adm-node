@@ -64,17 +64,13 @@ exports.createPublisher = (publisher) => {
         }
         console.log(book);
         book = book[0];
-        console.log(book);
-        if (book.pubId !== publisherId) {
-          console.log(book.pubId);
-          book.pubId = publisherId;
-          try {
-            await bookDao.updateBook(db, book);
-          } catch (error) {
-            results.updateBooksError = true;
-            db.rollback(() => reject(results));
-            return;
-          }
+        book.pubId = publisherId;
+        try {
+          await bookDao.updateBook(db, book);
+        } catch (error) {
+          results.updateBooksError = true;
+          db.rollback(() => reject(results));
+          return;
         }
       }
       db.commit(() => resolve(results));
