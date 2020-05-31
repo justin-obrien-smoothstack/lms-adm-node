@@ -42,12 +42,14 @@ exports.createPublisher = (publisher) => {
       try {
         publisherId = (await publisherDao.createPublisher(db, publisher))
           .insertId;
+        console.log(publisherId);
       } catch (error) {
         results.createError = true;
         db.rollback(() => reject(results));
         return;
       }
       for (const bookId of publisher.bookIds) {
+        console.log(bookId);
         try {
           book = await bookDao.readBooks(db, bookId);
         } catch (error) {
@@ -55,12 +57,16 @@ exports.createPublisher = (publisher) => {
           db.rollback(() => reject(results));
           return;
         }
-        if (book.size === 0) {
+        if (book.length === 0) {
           results.bookNotFound = bookId;
           db.rollback(() => reject(results));
           return;
         }
+        console.log(book);
+        book = book[0];
+        console.log(book);
         if (book.pubId !== publisherId) {
+          console.log(book.pubId);
           book.pubId = publisherId;
           try {
             await bookDao.updateBook(db, book);
