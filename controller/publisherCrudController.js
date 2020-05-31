@@ -40,11 +40,11 @@ router.post("/lms/admin/publisher", async (request, response) => {
         );
       return;
     }
-    if (error.bookNotFound !== undefined) {
+    if (error.bookNotFound) {
       response
         .status(404)
         .send(
-          `There is no book with ID ${error.bookNotFound} in the database.`
+          `There is no book with ID ${error.bookNotFoundValue} in the database.`
         );
       return;
     }

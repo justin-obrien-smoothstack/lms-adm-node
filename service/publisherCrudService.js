@@ -13,7 +13,8 @@ exports.createPublisher = (publisher) => {
     transactionError: false,
     createError: false,
     readBooksError: false,
-    bookNotFound: undefined,
+    bookNotFound: false,
+    bookNotFoundValue: null,
     updateBooksError: false,
   };
   let publisherId, book;
@@ -56,7 +57,8 @@ exports.createPublisher = (publisher) => {
           return;
         }
         if (book.length === 0) {
-          results.bookNotFound = bookId;
+          results.bookNotFound = true;
+          results.bookNotFoundValue = bookId;
           db.rollback(() => reject(results));
           return;
         }
