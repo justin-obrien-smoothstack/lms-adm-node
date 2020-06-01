@@ -47,28 +47,30 @@ exports.createPublisher = (publisher) => {
         db.rollback(() => reject(results));
         return;
       }
-      for (const bookId of publisher.bookIds) {
-        try {
-          book = await bookDao.readBooks(db, bookId);
-        } catch (error) {
-          results.readBooksError = true;
-          db.rollback(() => reject(results));
-          return;
-        }
-        if (book.length === 0) {
-          results.bookNotFound = true;
-          results.bookNotFoundValue = bookId;
-          db.rollback(() => reject(results));
-          return;
-        }
-        book = book[0];
-        book.pubId = publisherId;
-        try {
-          await bookDao.updateBook(db, book);
-        } catch (error) {
-          results.updateBooksError = true;
-          db.rollback(() => reject(results));
-          return;
+      if (bookIds) {
+        for (const bookId of publisher.bookIds) {
+          try {
+            book = await bookDao.readBooks(db, bookId);
+          } catch (error) {
+            results.readBooksError = true;
+            db.rollback(() => reject(results));
+            return;
+          }
+          if (book.length === 0) {
+            results.bookNotFound = true;
+            results.bookNotFoundValue = bookId;
+            db.rollback(() => reject(results));
+            return;
+          }
+          book = book[0];
+          book.pubId = publisherId;
+          try {
+            await bookDao.updateBook(db, book);
+          } catch (error) {
+            results.updateBooksError = true;
+            db.rollback(() => reject(results));
+            return;
+          }
         }
       }
       db.commit(() => resolve(results));
