@@ -28,6 +28,11 @@ exports.readAll = () => {
     });
 };
 
+let addBookCopiesToBranch = async (copies) => {
+    return new Promise((resolve, reject) => {
+        
+    });
+}
 
 exports.createBranch = (branch) => {
     return new Promise((resolve, reject) => {

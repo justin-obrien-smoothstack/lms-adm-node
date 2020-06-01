@@ -29,6 +29,17 @@ exports.readAll = (db) => {
     });
 };
 
+exports.readBookCopies(db, branchId)
+{
+    return new Promise((resolve, reject) => {
+        let sql = 'SELECT bookId, noOfCopies FROM tbl_book_copies WHERE branchId = ?';
+        let parameters = [branchId];
+        db.query(sql,function(err,result) {
+            return err ? reject(err) : resolve(result);
+        });
+    });
+}
+
 exports.update = (db,branch) => {
     const sql = "UPDATE tbl_library_branch SET branchName = ?, branchAddress = ? WHERE branchId = ?";
     const parameters = [branch.branchName, branch.branchAddress, branch.branchId];
