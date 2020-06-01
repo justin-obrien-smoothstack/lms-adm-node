@@ -150,6 +150,30 @@ router.put("/lms/admin/publisher", (request, response) => {
           );
         return;
       }
+      if (error.readBooksError) {
+        response
+          .status(500)
+          .send(
+            "There was an error while attempting to find the publisher's books in the database."
+          );
+        return;
+      }
+      if (error.bookNotFound) {
+        response
+          .status(404)
+          .send(
+            `There is no book with ID ${error.bookNotFoundValue} in the database.`
+          );
+        return;
+      }
+      if (error.updateBookError) {
+        response
+          .status(500)
+          .send(
+            "There was an error while attempting to update book information."
+          );
+        return;
+      }
       if (error.updateError) {
         response
           .status(500)
