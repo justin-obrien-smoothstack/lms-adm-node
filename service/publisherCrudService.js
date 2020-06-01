@@ -11,10 +11,11 @@ exports.createPublisher = (publisher) => {
     noName: false,
     tooLong: false,
     transactionError: false,
-    createError: false,
     readBooksError: false,
     bookNotFound: false,
+    bookNotFoundValue: null,
     updateBooksError: false,
+    createError: false,
   };
   let publisherId, book;
   return new Promise((resolve, reject) => {
@@ -127,9 +128,13 @@ exports.updatePublisher = (publisher) => {
     transactionError: false,
     readError: false,
     publisherNotFound: false,
+    readBooksError: false,
+    bookNotFound: false,
+    bookNotFoundValue: null,
+    updateBooksError: false,
     updateError: false,
   };
-  let existingPublisher;
+  let books;
   return new Promise((resolve, reject) => {
     if (
       !publisher.publisherName ||
@@ -169,6 +174,34 @@ exports.updatePublisher = (publisher) => {
         results.publisherNotFound = true;
         db.rollback(() => reject(results));
         return;
+      }
+      if (!publisher.bookIds) publisher.bookIds = [];
+      try {
+        books = await bookDao.readBooks(db);
+      } catch (error) {
+        results.readBooksError = true;
+        db.rollback(() => reject(results));
+        return;
+      } // check for invalid bookIds
+      for (const book of books) {
+        if (
+          book.pubId === publisher.publisherId &&
+          !publisher.bookIds.includes(book.bookId)
+        )
+          book.pubId = null;
+        else if (
+          publisher.bookIds.includes(book.bookId) &&
+          book.pubId !== publisher.publisherId
+        )
+          book.pubId = pubId;
+        else continue;
+        try {
+          await bookDao.updateBook(db, book);
+        } catch (error) {
+          results.updateBooksError = true;
+          db.rollback(() => reject(results));
+          return;
+        }
       }
       try {
         publisherDao.updatePublisher(db, publisher);
