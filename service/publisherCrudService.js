@@ -182,7 +182,14 @@ exports.updatePublisher = (publisher) => {
         results.readBooksError = true;
         db.rollback(() => reject(results));
         return;
-      } // check for invalid bookIds
+      }
+      for (const bookId of publisher.bookIds)
+        if (books.findIndex((book) => book.bookId === bookId) < 0) {
+          results.bookNotFound = true;
+          results.bookNotFoundValue = bookId;
+          db.rollback(() => reject(results));
+          return;
+        }
       for (const book of books) {
         if (
           book.pubId === publisher.publisherId &&
