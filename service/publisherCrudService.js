@@ -47,7 +47,7 @@ exports.createPublisher = (publisher) => {
         db.rollback(() => reject(results));
         return;
       }
-      if (bookIds) {
+      if (publisher.bookIds) {
         for (const bookId of publisher.bookIds) {
           try {
             book = await bookDao.readBooks(db, bookId);
