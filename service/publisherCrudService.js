@@ -134,7 +134,7 @@ exports.updatePublisher = (publisher) => {
     updateBooksError: false,
     updateError: false,
   };
-  let books;
+  let books, existingPublisher;
   return new Promise((resolve, reject) => {
     if (
       !publisher.publisherName ||
@@ -200,7 +200,7 @@ exports.updatePublisher = (publisher) => {
           publisher.bookIds.includes(book.bookId) &&
           book.pubId !== publisher.publisherId
         )
-          book.pubId = pubId;
+          book.pubId = publisher.publisherId;
         else continue;
         try {
           await bookDao.updateBook(db, book);
