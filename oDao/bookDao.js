@@ -9,15 +9,36 @@ const doQuery = (db, query, parameters) => {
   });
 };
 
+const getBookRelations = async (db, bookId, table, column) => {
+  const query = `SELECT * FROM ${table} WHERE bookId LIKE ?`;
+  return (await doQuery(db, query, bookId)).map((row) => row[column]);
+};
+
 exports.createBook = (db, book) => {
   const query = "INSERT INTO tbl_book (title, pubId) VALUES (?,?);",
     parameters = [book.title, book.pubId];
   return doQuery(db, query, parameters);
 };
 
-exports.readBooks = (db, bookId = "%") => {
+exports.readBooks = async (db, bookId = "%") => {
   const query = "SELECT * FROM tbl_book WHERE bookId LIKE ?";
-  return doQuery(db, query, bookId);
+  let books;
+  books = await doQuery(db, query, bookId);
+  for (const book of books) {
+    book.authorIds = await getBookRelations(
+      db,
+      book.bookId,
+      "tbl_book_authors",
+      "authorId"
+    );
+    book.genreIds = await getBookRelations(
+      db,
+      book.bookId,
+      "tbl_book_genres",
+      "genre_id"
+    );
+  }
+  return books;
 };
 
 exports.updateBook = (db, book) => {
