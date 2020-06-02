@@ -14,6 +14,18 @@ const getBookRelations = async (db, bookId, table, column) => {
   return (await doQuery(db, query, bookId)).map((row) => row[column]);
 };
 
+const setBookRelations = async (db, bookId, relationIds, table, column) => {
+  const deleteQuery = `DELETE FROM ${table} WHERE bookId = ?;`,
+    parameters = [];
+  let createQuery = `INSERT INTO ${table} (bookId, ${column}) VALUES`;
+  relationIds.forEach((relationId) => {
+    createQuery += " (?,?)";
+    parameters.push(bookId, relationId);
+  });
+  createQuery += ";";
+  doQuery(db, query, parameters)
+};
+
 exports.createBook = (db, book) => {
   const query = "INSERT INTO tbl_book (title, pubId) VALUES (?,?);",
     parameters = [book.title, book.pubId];
