@@ -23,6 +23,25 @@ router.get("/lms/admin/books", async (request, response) => {
   });
 });
 
+router.get("/lms/admin/books/:bookId", async (request, response) => {
+  let books;
+  try {
+    books = await bookCrudService.readBooks(request.params.bookId);
+  } catch (error) {
+    response
+      .status(500)
+      .send(
+        "There was an error while attempting to retrieve book information from the database."
+      );
+    return;
+  }
+  response.status(200);
+  response.format({
+    "application/json": () => response.send(books),
+    "application/xml": () => response.send(jsontoxml(books)),
+  });
+});
+
 router.delete("/lms/admin/books/:bookId", async (request, response) => {
   try {
     await bookCrudService.deleteBook(request.params.bookId);

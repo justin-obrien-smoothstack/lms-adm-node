@@ -59,8 +59,8 @@ exports.createBook = (book) => {
   });
 };
 
-exports.readBooks = async () => {
-  return await bookDao.readBooks(db);
+exports.readBooks = async (bookId = "%") => {
+  return await bookDao.readBooks(db, bookId);
 };
 
 exports.updateBook = (book) => {
