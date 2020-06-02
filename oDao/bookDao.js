@@ -30,7 +30,7 @@ const setBookRelations = async (db, bookId, relationIds, table, column) => {
 exports.createBook = (db, book) => {
   const query = "INSERT INTO tbl_book (title, pubId) VALUES (?,?);",
     parameters = [book.title, book.pubId];
-  doQuery(db, query, parameters);
+  return doQuery(db, query, parameters);
 };
 
 exports.readBooks = async (db, bookId = "%") => {
@@ -57,10 +57,10 @@ exports.readBooks = async (db, bookId = "%") => {
 exports.updateBook = (db, book) => {
   const query = "UPDATE tbl_book SET title = ?, pubId = ? WHERE bookId = ?;",
     parameters = [book.title, book.pubId, book.bookId];
-  doQuery(db, query, parameters);
+  return doQuery(db, query, parameters);
 };
 
 exports.deleteBook = (db, bookId) => {
   const query = "DELETE FROM tbl_book WHERE bookId = ?;";
-  doQuery(db, query, bookId);
+  return doQuery(db, query, bookId);
 };
