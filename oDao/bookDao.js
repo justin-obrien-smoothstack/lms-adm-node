@@ -27,10 +27,24 @@ const setBookRelations = async (db, bookId, relationIds, table, column) => {
   await doQuery(db, createQuery, parameters);
 };
 
-exports.createBook = (db, book) => {
+exports.createBook = async (db, book) => {
   const query = "INSERT INTO tbl_book (title, pubId) VALUES (?,?);",
-    parameters = [book.title, book.pubId];
-  return doQuery(db, query, parameters);
+    parameters = [book.title, book.pubId],
+    bookId = (await doQuery(db, query, parameters)).insertId;
+  await setBookRelations(
+    db,
+    bookId,
+    book.authorIds,
+    "tbl_book_authors",
+    "authorId"
+  );
+  await setBookRelations(
+    db,
+    bookId,
+    book.authorIds,
+    "tbl_book_genres",
+    "genre_id"
+  );
 };
 
 exports.readBooks = async (db, bookId = "%") => {
