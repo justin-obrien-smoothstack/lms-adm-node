@@ -23,7 +23,8 @@ const setBookRelations = async (db, bookId, relationIds, table, column) => {
     parameters.push(bookId, relationId);
   });
   createQuery += ";";
-  doQuery(db, query, parameters)
+  await doQuery(db, deleteQuery, bookId);
+  await doQuery(db, createQuery, parameters);
 };
 
 exports.createBook = (db, book) => {
