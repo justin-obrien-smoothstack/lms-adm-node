@@ -40,6 +40,38 @@ router.post("/lms/admin/book", async (request, response) => {
         );
       return;
     }
+    if(error.authorReadError){
+      response
+        .status(500)
+        .send(
+          "There was an error while attempting to find the book's authors in the database."
+        );
+      return;
+    }
+    if (error.authorNotFound) {
+      response
+        .status(404)
+        .send(
+          `There are no authors in the database with these IDs: ${results.authorNotFoundValues}`
+        );
+      return;
+    }
+    if(error.genreReadError){
+      response
+        .status(500)
+        .send(
+          "There was an error while attempting to find the book's genres in the database."
+        );
+      return;
+    }
+    if (error.genreNotFound) {
+      response
+        .status(404)
+        .send(
+          `There are no genres in the database with these IDs: ${results.genreNotFoundValues}`
+        );
+      return;
+    }
     if (error.createError) {
       response
         .status(500)
