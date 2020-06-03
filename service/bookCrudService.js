@@ -4,6 +4,7 @@ const db = require("./db"),
   bookDao = require("../oDao/bookDao"),
   publisherDao = require("../oDao/publisherDao"),
   authorDao = require("../oDao/authorDao");
+genreDao = require("../oDao/genreDao");
 
 const maxLength = 45;
 
@@ -16,6 +17,8 @@ exports.createBook = (book) => {
     authorReadError: false,
     authorNotFound: false,
     authorNotFoundValues: null,
+    genreNotFound: false,
+    genreNotFoundValues: null,
     publisherNotFound: false,
     createError: false,
   };
@@ -64,6 +67,24 @@ exports.createBook = (book) => {
           authorIds = authorIds.map((authorId) => authorId.authorId);
           results.authorNotFoundValues = book.authorIds.filter(
             (authorId) => !authorIds.includes(authorId)
+          );
+          db.rollback(() => reject(results));
+          return;
+        }
+      }
+      if (book.genreIds && book.genreIds.length > 0) {
+        try {
+          genreIds = await genreDao.readSomeGenres(db, book.genreIds);
+        } catch (error) {
+          results.genreReadError = true;
+          db.rollback(() => reject(results));
+          return;
+        }
+        if (genreIds.length < book.genreIds.length) {
+          results.genreNotFound = true;
+          genreIds = genreIds.map((genreId) => genreId.genre_id);
+          results.genreNotFoundValues = book.genreIds.filter(
+            (genreId) => !genreIds.includes(genreId)
           );
           db.rollback(() => reject(results));
           return;
