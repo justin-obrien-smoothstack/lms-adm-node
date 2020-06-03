@@ -10,7 +10,7 @@ const doQuery = (db, query, parameters) => {
 };
 
 const getBookRelations = async (db, bookId, table, column) => {
-  const query = `SELECT * FROM ${table} WHERE bookId LIKE ?`;
+  const query = `SELECT * FROM ${table} WHERE bookId LIKE ?;`;
   return (await doQuery(db, query, bookId)).map((row) => row[column]);
 };
 
@@ -18,17 +18,18 @@ const setBookRelations = async (db, bookId, relationIds, table, column) => {
   const deleteQuery = `DELETE FROM ${table} WHERE bookId = ?;`,
     parameters = [];
   let createQuery = `INSERT INTO ${table} (bookId, ${column}) VALUES`;
+  if (relationIds.length === 0) return;
   relationIds.forEach((relationId) => {
-    createQuery += " (?,?)";
+    createQuery += " (?, ?),";
     parameters.push(bookId, relationId);
   });
-  createQuery += ";";
+  createQuery = createQuery.substring(0, createQuery.length - 1) + ";";
   await doQuery(db, deleteQuery, bookId);
   await doQuery(db, createQuery, parameters);
 };
 
 exports.createBook = async (db, book) => {
-  const query = "INSERT INTO tbl_book (title, pubId) VALUES (?,?);",
+  const query = "INSERT INTO tbl_book (title, pubId) VALUES (?, ?);",
     parameters = [book.title, book.pubId],
     bookId = (await doQuery(db, query, parameters)).insertId;
   await setBookRelations(
@@ -41,14 +42,14 @@ exports.createBook = async (db, book) => {
   await setBookRelations(
     db,
     bookId,
-    book.authorIds,
+    book.genreIds,
     "tbl_book_genres",
     "genre_id"
   );
 };
 
 exports.readBooks = async (db, bookId = "%") => {
-  const query = "SELECT * FROM tbl_book WHERE bookId LIKE ?";
+  const query = "SELECT * FROM tbl_book WHERE bookId LIKE ?;";
   let books;
   books = await doQuery(db, query, bookId);
   for (const book of books) {

@@ -52,7 +52,7 @@ router.post("/lms/admin/book", async (request, response) => {
       response
         .status(404)
         .send(
-          `There are no authors in the database with these IDs: ${results.authorNotFoundValues}`
+          `There are no authors in the database with these IDs: ${error.authorNotFoundValues}`
         );
       return;
     }
@@ -68,7 +68,7 @@ router.post("/lms/admin/book", async (request, response) => {
       response
         .status(404)
         .send(
-          `There are no genres in the database with these IDs: ${results.genreNotFoundValues}`
+          `There are no genres in the database with these IDs: ${error.genreNotFoundValues}`
         );
       return;
     }
