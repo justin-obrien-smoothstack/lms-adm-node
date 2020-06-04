@@ -14,12 +14,13 @@ exports.createBook = (book) => {
     tooLong: false,
     transactionError: false,
     publisherReadError: false,
+    publisherNotFound: false,
     authorReadError: false,
     authorNotFound: false,
     authorNotFoundValues: null,
+    genreReadError: false,
     genreNotFound: false,
     genreNotFoundValues: null,
-    publisherNotFound: false,
     createError: false,
   };
   let publisher, authorIds, genreIds;
@@ -115,6 +116,12 @@ exports.updateBook = (book) => {
     bookNotFound: false,
     publisherReadError: false,
     publisherNotFound: false,
+    authorReadError: false,
+    authorNotFound: false,
+    authorNotFoundValues: null,
+    genreReadError: false,
+    genreNotFound: false,
+    genreNotFoundValues: null,
     udpateError: false,
   };
   let books, publishers;
