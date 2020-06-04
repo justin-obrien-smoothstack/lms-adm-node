@@ -161,6 +161,42 @@ exports.updateBook = (book) => {
           return;
         }
       }
+      if (book.authorIds && book.authorIds.length > 0) {
+        try {
+          authorIds = await authorDao.readSomeAuthors(db, [book.authorIds]);
+        } catch (error) {
+          results.authorReadError = true;
+          db.rollback(() => reject(results));
+          return;
+        }
+        if (authorIds.length < book.authorIds.length) {
+          results.authorNotFound = true;
+          authorIds = authorIds.map((authorId) => authorId.authorId);
+          results.authorNotFoundValues = book.authorIds.filter(
+            (authorId) => !authorIds.includes(authorId)
+          );
+          db.rollback(() => reject(results));
+          return;
+        }
+      }
+      if (book.genreIds && book.genreIds.length > 0) {
+        try {
+          genreIds = await genreDao.readSomeGenres(db, [book.genreIds]);
+        } catch (error) {
+          results.genreReadError = true;
+          db.rollback(() => reject(results));
+          return;
+        }
+        if (genreIds.length < book.genreIds.length) {
+          results.genreNotFound = true;
+          genreIds = genreIds.map((genreId) => genreId.genre_id);
+          results.genreNotFoundValues = book.genreIds.filter(
+            (genreId) => !genreIds.includes(genreId)
+          );
+          db.rollback(() => reject(results));
+          return;
+        }
+      }
       try {
         await bookDao.updateBook(db, book);
       } catch (udpateError) {
