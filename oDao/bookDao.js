@@ -75,14 +75,14 @@ exports.updateBook = async (db, book) => {
   await doQuery(db, query, parameters);
   await setBookRelations(
     db,
-    bookId,
+    book.bookId,
     book.authorIds,
     "tbl_book_authors",
     "authorId"
   );
   await setBookRelations(
     db,
-    bookId,
+    book.bookId,
     book.genreIds,
     "tbl_book_genres",
     "genre_id"

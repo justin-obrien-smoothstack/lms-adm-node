@@ -124,7 +124,7 @@ exports.updateBook = (book) => {
     genreNotFoundValues: null,
     udpateError: false,
   };
-  let books, publishers;
+  let books, publishers, authorIds, genreIds;
   return new Promise((resolve, reject) => {
     if (!book.title || (book.bookId !== 0 && !book.bookId)) {
       results.fieldsMissing = true;
