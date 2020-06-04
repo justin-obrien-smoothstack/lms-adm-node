@@ -34,14 +34,14 @@ exports.createBook = async (db, book) => {
     bookId = (await doQuery(db, query, parameters)).insertId;
   await setBookRelations(
     db,
-    bookId,
+    book.bookId,
     book.authorIds,
     "tbl_book_authors",
     "authorId"
   );
   await setBookRelations(
     db,
-    bookId,
+    book.bookId,
     book.genreIds,
     "tbl_book_genres",
     "genre_id"
@@ -69,10 +69,24 @@ exports.readBooks = async (db, bookId = "%") => {
   return books;
 };
 
-exports.updateBook = (db, book) => {
+exports.updateBook = async (db, book) => {
   const query = "UPDATE tbl_book SET title = ?, pubId = ? WHERE bookId = ?;",
     parameters = [book.title, book.pubId, book.bookId];
-  return doQuery(db, query, parameters);
+  await doQuery(db, query, parameters);
+  await setBookRelations(
+    db,
+    bookId,
+    book.authorIds,
+    "tbl_book_authors",
+    "authorId"
+  );
+  await setBookRelations(
+    db,
+    bookId,
+    book.genreIds,
+    "tbl_book_genres",
+    "genre_id"
+  );
 };
 
 exports.deleteBook = (db, bookId) => {
