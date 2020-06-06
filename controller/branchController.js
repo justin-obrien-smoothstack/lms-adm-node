@@ -54,6 +54,7 @@ routes.get("/lms/admin/branches/:id", (req,res) => {
 });
 
 routes.post("/lms/admin/branches", (req,res) => {
+    console.log(req.body);
     if (!req.body.branchName || !req.body.branchAddress) {
         res.status(400).send("branch name and address cannot be empty.")
     }
@@ -61,7 +62,7 @@ routes.post("/lms/admin/branches", (req,res) => {
     if (req.body.branchName.length > 45 || req.body.branchName.length < 3) {
         res.status(400).send("branch name must be between 3 and 45 characters")
     } 
-
+ 
     if (req.body.branchAddress.length > 45 || req.body.branchAddress.length < 3) {
         res.status(400).send("branch address must be between 3 and 45 characters")
     } 

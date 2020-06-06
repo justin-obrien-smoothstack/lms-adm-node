@@ -62,8 +62,22 @@ exports.createAuthor = (author) => {
               return;
             }
             authorDao.create(db,author)
-            .then((result) =>{
+            .then(async (result) => {
                 responseAttributes.message = `author with name ${author.authorName} created`;
+                try {
+                    await authorDao.removeBookConnections(db, result.insertId);
+                }
+                catch (error) {
+                    console.log(error);
+                }
+                for (let i = 0; i < author.books.length;i++) {
+                    try {
+                        await authorDao.addBookConnections(db, author.books[i].bookId, result.insertId);
+                    }
+                    catch(error) {
+                        console.log(error);
+                    }
+                }
                 db.commit(() => resolve(responseAttributes));
              })
             .catch((error) => {
@@ -84,12 +98,26 @@ exports.updateAuthor = (author) => {
               return;
             }
             authorDao.read(db, author.authorId)
-            .then((result) => {
+            .then(async (result) => {
                 if (result.length == 0) { // no record was found
                     responseAttributes.status = 404;
                     responseAttributes.message = `no author with id ${author.authorId} was found`;
                     resolve(responseAttributes);
                 } else {
+                    try {
+                        await authorDao.removeBookConnections(db, author.authorId);
+                    }
+                    catch (error) {
+                        console.log(error);
+                    }
+                    for (let i = 0; i < author.books.length;i++) {
+                        try {
+                            await authorDao.addBookConnections(db, author.books[i].bookId, author.authorId);
+                        }
+                        catch(error) {
+                            console.log(error);
+                        }
+                    }
                     authorDao.update(db, author)
                     .then((result) =>{
                         responseAttributes.status = 202;
@@ -119,11 +147,17 @@ exports.deleteAuthor = (authorId) => {
                 responseAttributes.message = `no author with id ${authorId} was found`;
                 resolve(responseAttributes);
             } else {
-                db.beginTransaction((transactionError) => {
+                db.beginTransaction(async (transactionError) => {
                     if (transactionError) {
                       results.transactionError = true;
                       reject(results);
                       return;
+                    }
+                    try {
+                        await authorDao.removeBookConnections(authorId);
+                    }
+                    catch {
+                        console.log("An error occurred removing the relational connections "+error);
                     }
                     authorDao.delete(db,authorId)
                     .then((result) =>{

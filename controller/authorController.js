@@ -77,10 +77,11 @@ routes.post("/lms/admin/authors", (req,res) => {
 });
 
 routes.put("/lms/admin/authors", (req,res) => {
+    console.log(req.body);
     if (!req.body.authorName) {
         res.status(400).send("author name required");
     }
-    if (req.body.authorName.length > 45 || req.body.author.length < 3) {
+    if (req.body.authorName.length > 45 || req.body.authorName.length < 3) {
         res.status(400).send("author name must be between 3 and 45 characters in length");
     }
     authorService.updateAuthor(req.body)
