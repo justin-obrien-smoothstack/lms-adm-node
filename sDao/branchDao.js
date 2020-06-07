@@ -29,7 +29,7 @@ exports.readAll = (db) => {
     });
 };
 
-exports.readBookCopies(db, branchId)
+exports.readBookCopies = (db, branchId) =>
 {
     return new Promise((resolve, reject) => {
         let sql = 'SELECT bookId, noOfCopies FROM tbl_book_copies WHERE branchId = ?';
