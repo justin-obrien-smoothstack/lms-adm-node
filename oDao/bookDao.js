@@ -53,7 +53,7 @@ exports.readBooks = async (db, bookId = "%", pubId = "%", includeNullPubId = tru
   let query = "SELECT * FROM tbl_book WHERE bookId LIKE ? AND (pubId LIKE ?", books;
   if (includeNullPubId) query += " OR pubId IS NULL";
   query += ");";
-  books = await doQuery(db, query, bookId);
+  books = await doQuery(db, query, parameters);
   for (const book of books) {
     book.authorIds = await getBookRelations(
       db,

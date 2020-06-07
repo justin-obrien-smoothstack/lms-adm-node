@@ -92,7 +92,7 @@ router.get("/lms/admin/books", async (request, response) => {
     response
       .status(500)
       .send(
-        "There was an error while attempting to retrieve book information from the database."
+        "There was an error while attempting to retrieve book information."
       );
     return;
   }
@@ -111,7 +111,7 @@ router.get("/lms/admin/books/:bookId", async (request, response) => {
     response
       .status(500)
       .send(
-        "There was an error while attempting to retrieve book information from the database."
+        "There was an error while attempting to retrieve book information."
       );
     return;
   }
