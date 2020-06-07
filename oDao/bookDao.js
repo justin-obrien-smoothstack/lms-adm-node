@@ -7,7 +7,7 @@ const doQuery = (db, query, parameters) => {
       resolve(result);
     });
   });
-};
+}
 
 const getBookRelations = async (db, bookId, table, column) => {
   const query = `SELECT * FROM ${table} WHERE bookId LIKE ?;`;
@@ -48,9 +48,11 @@ exports.createBook = async (db, book) => {
   );
 };
 
-exports.readBooks = async (db, bookId = "%") => {
-  const query = "SELECT * FROM tbl_book WHERE bookId LIKE ?;";
-  let books;
+exports.readBooks = async (db, bookId = "%", pubId = "%", includeNullPubId = true) => {
+  const parameters = [bookId, pubId];
+  let query = "SELECT * FROM tbl_book WHERE bookId LIKE ? AND (pubId LIKE ?", books;
+  if (includeNullPubId) query += " OR pubId IS NULL";
+  query += ");";
   books = await doQuery(db, query, bookId);
   for (const book of books) {
     book.authorIds = await getBookRelations(

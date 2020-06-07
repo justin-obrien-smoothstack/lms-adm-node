@@ -68,3 +68,27 @@ exports.delete = (db, authorId) => {
         });
     });
 };
+
+exports.removeBookConnections = async (db, authorId) => {
+    const sql = "DELETE FROM tbl_book_authors WHERE authorId = ?";
+    const parameters = [authorId];
+    return new Promise((resolve, reject) => {
+        db.query(sql, parameters, (error, result) => {
+            if (error) 
+                reject(error);
+            resolve(result);
+        });
+    });
+}
+
+exports.addBookConnections = async (db, bookId, authorId) => {
+    const sql = "INSERT INTO tbl_book_authors (bookId, authorID) VALUES(?,?)";
+    const parameters = [bookId,authorId];
+    return new Promise((resolve, reject) => {
+        db.query(sql, parameters, (error, result) => {
+            if (error) 
+                reject(error);
+            resolve(result);
+        });
+    });
+}
