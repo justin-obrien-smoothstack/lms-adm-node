@@ -4,39 +4,98 @@ const publisherCrudService = require("../service/publisherCrudService"),
   router = require("express").Router(),
   jsontoxml = require("jsontoxml");
 
-router.post("/lms/admin/publisher", (request, response) => {
-  const publisher = request.body;
-  publisherCrudService.createPublisher(publisher).then(
-    (result) => response.sendStatus(201),
-    (error) => {
-      if (error.noName) {
-        response.status(400).send("The field 'publisherName' is required.");
-        return;
-      }
-      if (error.tooLong) {
-        response.status(400).send("The maximum field length is 45 characters.");
-        return;
-      }
-      if (error.transactionError) {
-        response
-          .status(500)
-          .send(
-            "There was an error while attempting to start a database transaction."
-          );
-        return;
-      }
-      if (error.createError) {
-        response
-          .status(500)
-          .send(
-            "There was an error while attempting to add the publisher information."
-          );
-      }
+router.post("/lms/admin/publisher", async (request, response) => {
+  try {
+    await publisherCrudService.createPublisher(request.body);
+  } catch (error) {
+    if (error.noName) {
+      response.status(400).send("The field 'publisherName' is required.");
+      return;
     }
-  );
+    if (error.tooLong) {
+      response.status(400).send("The maximum field length is 45 characters.");
+      return;
+    }
+    if (error.transactionError) {
+      response
+        .status(500)
+        .send(
+          "There was an error while attempting to start a database transaction."
+        );
+      return;
+    }
+    if (error.createError) {
+      response
+        .status(500)
+        .send(
+          "There was an error while attempting to create a database entry."
+        );
+      return;
+    }
+    if (error.readBooksError) {
+      response
+        .status(500)
+        .send(
+          "There was an error while attempting to find the publisher's books in the database."
+        );
+      return;
+    }
+    if (error.bookNotFound) {
+      response
+        .status(404)
+        .send(
+          `There is no book with ID ${error.bookNotFoundValue} in the database.`
+        );
+      return;
+    }
+    if (error.updateBookError) {
+      response
+        .status(500)
+        .send(
+          "There was an error while attempting to update book information."
+        );
+      return;
+    }
+  }
+  response.sendStatus(201);
 });
 
-router.get("/lms/admin/publishers", (request, response) => {
+router.get("/lms/admin/publishers", async (request, response) => {
+  let publishers;
+  try {
+    publishers = await publisherCrudService.readPublishers();
+  } catch (error) {
+    if (error.transactionError) {
+      response
+        .status(500)
+        .send(
+          "There was an error while attempting to start a database transaction."
+        );
+      return;
+    }
+    if (error.readPublishersError) {
+      response
+        .status(500)
+        .send(
+          "There was an error while attempting to retrieve publisher information."
+        );
+      return;
+    }
+    if (error.readBooksError) {
+      response
+        .status(500)
+        .send(
+          "There was an error while attempting to retrieve book information."
+        );
+      return;
+    }
+    response.status(200);
+    response.format({
+      "application/json": () => response.send(publishers),
+      "application/xml": () => response.send(jsontoxml(publishers)),
+    });
+  }
+
   publisherCrudService.readPublishers().then(
     (result) => {
       response.status(200);
@@ -60,7 +119,9 @@ router.put("/lms/admin/publisher", (request, response) => {
     (result) => response.sendStatus(204),
     (error) => {
       if (error.fieldsMissing) {
-        response.status(400).send("The fields 'publisherId' and 'publisherName' are required.");
+        response
+          .status(400)
+          .send("The fields 'publisherId' and 'publisherName' are required.");
         return;
       }
       if (error.tooLong) {
@@ -86,6 +147,30 @@ router.put("/lms/admin/publisher", (request, response) => {
           .status(404)
           .send(
             `There is no publisher with ID ${request.body.publisherId} in the database.`
+          );
+        return;
+      }
+      if (error.readBooksError) {
+        response
+          .status(500)
+          .send(
+            "There was an error while attempting to find the publisher's books in the database."
+          );
+        return;
+      }
+      if (error.bookNotFound) {
+        response
+          .status(404)
+          .send(
+            `There is no book with ID ${error.bookNotFoundValue} in the database.`
+          );
+        return;
+      }
+      if (error.updateBookError) {
+        response
+          .status(500)
+          .send(
+            "There was an error while attempting to update book information."
           );
         return;
       }
