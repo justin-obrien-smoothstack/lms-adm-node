@@ -34,14 +34,14 @@ exports.createBook = async (db, book) => {
     bookId = (await doQuery(db, query, parameters)).insertId;
   await setBookRelations(
     db,
-    book.bookId,
+    bookId,
     book.authorIds,
     "tbl_book_authors",
     "authorId"
   );
   await setBookRelations(
     db,
-    book.bookId,
+    bookId,
     book.genreIds,
     "tbl_book_genres",
     "genre_id"
