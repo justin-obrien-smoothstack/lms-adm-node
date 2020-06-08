@@ -27,7 +27,6 @@ describe("Publisher CRUD Controller", () => {
       .request(app)
       .post("/lms/admin/publisher")
       .send(mockPublisher)
-      .accept("text")
       .end((error, response) => {
         should.equal(error, null);
         response.should.have.status(400);
