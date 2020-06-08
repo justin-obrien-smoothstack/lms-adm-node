@@ -27,7 +27,7 @@ describe("Due Date Override", () => {
     //   .returns(mockLoans);
     chai
       .request(overrideController)
-      .get("/lms/admin/loans").send()
+      .get("/lms/admin/loans")
       .then((result) => {
         // should.equal(error, null);
         result.body.should.be.an("array");
