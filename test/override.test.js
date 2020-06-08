@@ -28,12 +28,12 @@ describe("Due Date Override", () => {
     chai
       .request(app)
       .get("/lms/admin/loans")
-      .then((result) => {
-        // should.equal(error, null);
+      .end((error, result) => {
+        should.equal(error, null);
         result.body.should.be.an("array");
         // should.equal(request.body, mockLoans);
         // should.equal(0, 1);
-        // should.equal(result.status, 200);
+        should.equal(result.status, 200);
         done();
       });
   });
