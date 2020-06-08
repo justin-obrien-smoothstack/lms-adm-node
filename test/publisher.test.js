@@ -21,7 +21,7 @@ describe("Publisher CRUD Controller", () => {
     };
   });
 
-  it("test", (done) => {
+  it("should require a name when creating a publisher", (done) => {
     mockPublisher.publisherName = null;
     chai
       .request(app)
