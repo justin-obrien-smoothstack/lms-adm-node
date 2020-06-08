@@ -7,7 +7,7 @@ const chai = require("chai"),
 
 chai.use(chaiHttp);
 
-const overrideController = require("../controller/overrideController");
+const app = require("../main");
 
 const mockLoans = [
   {
@@ -26,7 +26,7 @@ describe("Due Date Override", () => {
     //   .stub(overrideController.overrideService, "readOverridableLoans")
     //   .returns(mockLoans);
     chai
-      .request(overrideController)
+      .request(app)
       .get("/lms/admin/loans")
       .then((result) => {
         // should.equal(error, null);

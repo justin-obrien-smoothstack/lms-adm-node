@@ -6,12 +6,12 @@ const chai = require("chai"),
 
 chai.use(chaiHttp);
 
-const overrideController = require("../controller/overrideController");
+const app = require("../main");
 
 describe("LMS", () => {
   it("should return status 404", (done) => {
     chai
-      .request(overrideController)
+      .request(app)
       .get("/x")
       .end((error, result) => {
         result.should.have.status(404);
