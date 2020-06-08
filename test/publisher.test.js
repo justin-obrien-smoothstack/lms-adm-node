@@ -17,7 +17,7 @@ describe("Publisher CRUD Controller", () => {
       publisherName: "Mock Name",
       publisherAddress: "Mock Address",
       publisherPhone: "Mock Phone",
-      bookIds: [1],
+      bookIds: [1,2],
     };
   });
 
