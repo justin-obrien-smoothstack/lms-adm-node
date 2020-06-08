@@ -101,7 +101,7 @@ routes.put("/lms/admin/genre", async (req, res) => {
         return;
       }
       service.updateGenre(req.body);
-      res.status(200);
+      res.status(200).send({ message: "Genre updated" });
     })
     .catch((err) => {
       logger.error(err);
