@@ -15,17 +15,17 @@ const mockLoans = [
     cardNo: 1,
     branchId: 1,
     bookId: 1,
-    dateOut: "2020-01-01T07:00:00.000Z",
-    dueDate: "2020-01-08T07:00:00.000Z",
+    dateOut: Date(2020, 0),
+    dueDate: Date(2020, 0, 8),
     dateIn: null,
   },
   {
     cardNo: 2,
     branchId: 2,
     bookId: 2,
-    dateOut: "2020-01-01T07:00:00.000Z",
-    dueDate: "2020-01-08T07:00:00.000Z",
-    dateIn: "2020-01-08T07:00:00.000Z",
+    dateOut: Date(2020, 0),
+    dueDate: Date(2020, 0, 8),
+    dateIn: Date(2020, 0, 9),
   },
 ];
 
