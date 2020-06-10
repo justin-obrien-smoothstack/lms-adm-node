@@ -103,8 +103,8 @@ exports.createBook = (book) => {
   });
 };
 
-exports.readBooks = () => {
-  return bookDao.readBooks(db);
+exports.readBooks = (bookId = "%") => {
+  return bookDao.readBooks(db, bookId);
 };
 
 exports.updateBook = (book) => {
