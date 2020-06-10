@@ -22,3 +22,5 @@ app.use(require("./controller/bookCrudController"));
 app.use(require("./controller/publisherCrudController"));
 app.use(require("./controller/overrideController"));
 app.listen(3000);
+
+module.exports = app;
