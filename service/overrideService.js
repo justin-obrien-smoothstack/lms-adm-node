@@ -4,6 +4,10 @@ const db = require("./db"),
   loanDao = require("../oDao/loanDao"),
   moment = require("moment");
 
+exports.readOverridableLoans = () => {
+  return loanDao.readOverridableLoans(db);
+};
+
 exports.overrideDueDate = (loanId, cb) => {
   const results = {
     transactionError: false,

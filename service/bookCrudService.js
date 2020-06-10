@@ -2,7 +2,9 @@
 
 const db = require("./db"),
   bookDao = require("../oDao/bookDao"),
-  publisherDao = require("../oDao/publisherDao");
+  publisherDao = require("../oDao/publisherDao"),
+  authorDao = require("../oDao/authorDao"),
+  genreDao = require("../oDao/genreDao");
 
 const maxLength = 45;
 
@@ -13,9 +15,15 @@ exports.createBook = (book) => {
     transactionError: false,
     publisherReadError: false,
     publisherNotFound: false,
+    authorReadError: false,
+    authorNotFound: false,
+    authorNotFoundValues: null,
+    genreReadError: false,
+    genreNotFound: false,
+    genreNotFoundValues: null,
     createError: false,
   };
-  let publishers;
+  let publisher, authorIds, genreIds;
   return new Promise((resolve, reject) => {
     if (!book.title) {
       results.noTitle = true;
@@ -35,14 +43,50 @@ exports.createBook = (book) => {
       }
       if (book.pubId === 0 || book.pubId) {
         try {
-          publishers = await publisherDao.readPublishers(db, book.pubId);
+          publisher = await publisherDao.readPublishers(db, book.pubId);
         } catch (publisherReadError) {
           results.publisherReadError = true;
           db.rollback(() => reject(results));
           return;
         }
-        if (publishers.length === 0) {
+        if (publisher.length === 0) {
           results.publisherNotFound = true;
+          db.rollback(() => reject(results));
+          return;
+        }
+      }
+      if (book.authorIds && book.authorIds.length > 0) {
+        try {
+          authorIds = await authorDao.readSomeAuthors(db, [book.authorIds]);
+        } catch (error) {
+          results.authorReadError = true;
+          db.rollback(() => reject(results));
+          return;
+        }
+        if (authorIds.length < book.authorIds.length) {
+          results.authorNotFound = true;
+          authorIds = authorIds.map((authorId) => authorId.authorId);
+          results.authorNotFoundValues = book.authorIds.filter(
+            (authorId) => !authorIds.includes(authorId)
+          );
+          db.rollback(() => reject(results));
+          return;
+        }
+      }
+      if (book.genreIds && book.genreIds.length > 0) {
+        try {
+          genreIds = await genreDao.readSomeGenres(db, [book.genreIds]);
+        } catch (error) {
+          results.genreReadError = true;
+          db.rollback(() => reject(results));
+          return;
+        }
+        if (genreIds.length < book.genreIds.length) {
+          results.genreNotFound = true;
+          genreIds = genreIds.map((genreId) => genreId.genre_id);
+          results.genreNotFoundValues = book.genreIds.filter(
+            (genreId) => !genreIds.includes(genreId)
+          );
           db.rollback(() => reject(results));
           return;
         }
@@ -59,8 +103,8 @@ exports.createBook = (book) => {
   });
 };
 
-exports.readBooks = async () => {
-  return await bookDao.readBooks(db);
+exports.readBooks = (bookId = "%") => {
+  return bookDao.readBooks(db, bookId);
 };
 
 exports.updateBook = (book) => {
@@ -72,9 +116,15 @@ exports.updateBook = (book) => {
     bookNotFound: false,
     publisherReadError: false,
     publisherNotFound: false,
+    authorReadError: false,
+    authorNotFound: false,
+    authorNotFoundValues: null,
+    genreReadError: false,
+    genreNotFound: false,
+    genreNotFoundValues: null,
     udpateError: false,
   };
-  let books, publishers;
+  let books, publishers, authorIds, genreIds;
   return new Promise((resolve, reject) => {
     if (!book.title || (book.bookId !== 0 && !book.bookId)) {
       results.fieldsMissing = true;
@@ -114,6 +164,42 @@ exports.updateBook = (book) => {
         }
         if (publishers.length === 0) {
           results.publisherNotFound = true;
+          db.rollback(() => reject(results));
+          return;
+        }
+      }
+      if (book.authorIds && book.authorIds.length > 0) {
+        try {
+          authorIds = await authorDao.readSomeAuthors(db, [book.authorIds]);
+        } catch (error) {
+          results.authorReadError = true;
+          db.rollback(() => reject(results));
+          return;
+        }
+        if (authorIds.length < book.authorIds.length) {
+          results.authorNotFound = true;
+          authorIds = authorIds.map((authorId) => authorId.authorId);
+          results.authorNotFoundValues = book.authorIds.filter(
+            (authorId) => !authorIds.includes(authorId)
+          );
+          db.rollback(() => reject(results));
+          return;
+        }
+      }
+      if (book.genreIds && book.genreIds.length > 0) {
+        try {
+          genreIds = await genreDao.readSomeGenres(db, [book.genreIds]);
+        } catch (error) {
+          results.genreReadError = true;
+          db.rollback(() => reject(results));
+          return;
+        }
+        if (genreIds.length < book.genreIds.length) {
+          results.genreNotFound = true;
+          genreIds = genreIds.map((genreId) => genreId.genre_id);
+          results.genreNotFoundValues = book.genreIds.filter(
+            (genreId) => !genreIds.includes(genreId)
+          );
           db.rollback(() => reject(results));
           return;
         }
