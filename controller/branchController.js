@@ -69,7 +69,7 @@ routes.post("/lms/admin/branches", (req,res) => {
 
     branchService.createBranch(req.body)
     .then(function (result){
-        res.status(result.status);
+        res.status(result.result);
         res.send(result.message);
     })
     .catch(function (error) {
@@ -95,7 +95,7 @@ routes.put("/lms/admin/branches", (req,res) => {
     branchService.updateBranch(req.body)
     .then(function (result){
         res.status(result.status);
-        res.send(result.message);
+        res.send(result.result);
     })
     .catch(function (error) {
       res.status(500);

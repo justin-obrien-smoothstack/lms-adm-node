@@ -87,7 +87,7 @@ routes.put("/lms/admin/authors", (req,res) => {
     authorService.updateAuthor(req.body)
     .then(function (result){
         res.status(result.status);
-        res.send(result.message);
+        res.send(result.result);
     })
     .catch(function (error) {
       res.status(500);

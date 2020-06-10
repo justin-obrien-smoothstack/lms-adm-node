@@ -29,12 +29,21 @@ exports.readAll = (db) => {
     });
 };
 
-exports.readBookCopies(db, branchId)
-{
+exports.readBookCopies = async (db, branchId) => {
     return new Promise((resolve, reject) => {
-        let sql = 'SELECT bookId, noOfCopies FROM tbl_book_copies WHERE branchId = ?';
+        let sql = 'SELECT * FROM tbl_book_copies WHERE branchId = ?';
         let parameters = [branchId];
-        db.query(sql,function(err,result) {
+        db.query(sql, parameters, function(err,result) {
+            return err ? reject(err) : resolve(result);
+        });
+    });
+}
+
+exports.getBookTitles = (db, bookId) => { 
+    return new Promise((resolve, reject) => {
+        let sql = 'SELECT title FROM tbl_book WHERE bookId =?'
+        let parameters = [bookId];
+        db.query(sql, parameters, function(err,result) {
             return err ? reject(err) : resolve(result);
         });
     });

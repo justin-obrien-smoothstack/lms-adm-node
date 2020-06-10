@@ -78,6 +78,7 @@ exports.createAuthor = (author) => {
                         console.log(error);
                     }
                 }
+                responseAttributes['result'] = result;
                 db.commit(() => resolve(responseAttributes));
              })
             .catch((error) => {
@@ -120,6 +121,7 @@ exports.updateAuthor = (author) => {
                     }
                     authorDao.update(db, author)
                     .then((result) =>{
+                        responseAttributes['result'] = result;
                         responseAttributes.status = 202;
                         responseAttributes.message = `author with name ${author.authorName} updated`;
                         db.commit(() => resolve(responseAttributes));
